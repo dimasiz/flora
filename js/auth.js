@@ -113,18 +113,44 @@ async function handleLogin(event) {
 async function handleRegister(event) {
     event.preventDefault();
     
-    const name = document.getElementById('register-name').value.trim();
-    const email = document.getElementById('register-email').value.trim();
-    const password = document.getElementById('register-password').value;
-    const passwordConfirm = document.getElementById('register-password-confirm').value;
+    const nameInput = document.getElementById('register-name');
+    const emailInput = document.getElementById('register-email');
+    const passwordInput = document.getElementById('register-password');
+    const passwordConfirmInput = document.getElementById('register-password-confirm');
+    
+    const nameRaw = nameInput.value;
+    const emailRaw = emailInput.value;
+    const passwordRaw = passwordInput.value;
+    const passwordConfirmRaw = passwordConfirmInput.value;
+    
+    const name = nameRaw.trim();
+    const email = emailRaw.trim();
+    const password = passwordRaw;
+    const passwordConfirm = passwordConfirmRaw;
     const submitBtn = event.target.querySelector('button[type="submit"]');
     
     // Clear previous errors
     clearFormErrors();
     
-    // Validation
+    // Validation: No leading spaces
+    if (nameRaw.startsWith(' ') || emailRaw.startsWith(' ') || passwordRaw.startsWith(' ') || passwordConfirmRaw.startsWith(' ')) {
+        showFormError('register-error', 'Поля не должны начинаться с пробела');
+        return;
+    }
+    
+    // Validation: All fields required
     if (!name || !email || !password || !passwordConfirm) {
         showFormError('register-error', 'Заполните все поля');
+        return;
+    }
+    
+    // Validation: Email domain
+    const allowedDomains = ['gmail.com', 'mail.ru', 'ya.ru', 'yandex.by'];
+    const emailParts = email.split('@');
+    const domain = emailParts[emailParts.length - 1].toLowerCase();
+    
+    if (!allowedDomains.includes(domain)) {
+        showFormError('register-error', 'Допустимые домены почты: gmail.com, mail.ru, ya.ru, yandex.by');
         return;
     }
     
