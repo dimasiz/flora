@@ -19,7 +19,7 @@ const firebaseConfig = {
 
 let firebaseApp = null;
 let firebaseAuth = null;
-let firebaseDatabase = null;
+var firebaseDatabase = null; // Changed to var for global access
 
 // Initialize Firebase when script loads
 async function initializeFirebase() {
@@ -33,6 +33,7 @@ async function initializeFirebase() {
         firebaseApp = initializeApp(firebaseConfig);
         firebaseAuth = getAuth(firebaseApp);
         firebaseDatabase = getDatabase(firebaseApp);
+        window.firebaseDatabase = firebaseDatabase; // Make database globally accessible
         
         // Store Firebase methods globally
         window.firebaseMethods = {
