@@ -24,18 +24,22 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function checkAuthAndLoadProfile() {
-    // Wait a bit for Firebase to initialize
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    // Wait for Firebase to initialize
+    if (window.waitForFirebase) {
+        console.log('⏳ Ожидание готовности Firebase для загрузки профиля...');
+        await window.waitForFirebase();
+        console.log('✅ Firebase готов, загружаем профиль');
+    }
+
     const user = getCurrentUser();
     const notLoggedIn = document.getElementById('not-logged-in');
     const profileContent = document.getElementById('profile-content');
-    
+
     if (user) {
         // User is logged in
         if (notLoggedIn) notLoggedIn.style.display = 'none';
         if (profileContent) profileContent.style.display = 'block';
-        
+
         loadProfileData(user);
     } else {
         // User is not logged in
@@ -93,13 +97,18 @@ async function loadProfileData(user) {
     
     // Set up real-time listener for progress updates
     if (typeof listenToProgressUpdates === 'function') {
-        progressUnsubscribe = listenToProgressUpdates(user.uid, (updatedStats) => {
+        // listenToProgressUpdates is now async
+        listenToProgressUpdates(user.uid, (updatedStats) => {
             console.log('📊 Обновление статистики профиля в реальном времени');
             updateStats(updatedStats);
             updateGamesProgress(updatedStats);
             updateAchievements(updatedStats);
             // Check for new achievements on every update
             checkForNewAchievements(updatedStats, user.uid);
+        }).then(unsubscribe => {
+            if (unsubscribe) {
+                progressUnsubscribe = unsubscribe;
+            }
         });
     }
 }

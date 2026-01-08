@@ -147,7 +147,12 @@ async function saveUnlockedAchievements(achievementIds, userId) {
         localStorage.setItem(`achievements_${userId}`, JSON.stringify(achievementIds));
         return;
     }
-    
+
+    // Wait for Firebase to be ready
+    if (window.waitForFirebase) {
+        await window.waitForFirebase();
+    }
+
     try {
         const { ref, set } = window.firebaseMethods;
         // firebaseDatabase should be available globally from firebase-config.js
@@ -268,3 +273,5 @@ window.checkForNewAchievements = checkForNewAchievements;
 window.loadUnlockedAchievements = loadUnlockedAchievements;
 window.saveUnlockedAchievements = saveUnlockedAchievements;
 window.achievements = achievements;
+
+console.log('✅ Система достижений загружена');
