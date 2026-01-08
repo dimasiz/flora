@@ -365,6 +365,22 @@ async function selectAvatar(avatar) {
 }
 
 // ========================================
+// INPUT VALIDATION HANDLERS
+// ========================================
+
+function setupEmailInputValidation() {
+    const registerEmailInput = document.getElementById('register-email');
+    if (registerEmailInput) {
+        registerEmailInput.addEventListener('input', function(e) {
+            const value = e.target.value;
+            if (value.startsWith(' ')) {
+                e.target.value = value.trimStart();
+            }
+        });
+    }
+}
+
+// ========================================
 // KEYBOARD HANDLERS
 // ========================================
 
@@ -380,6 +396,8 @@ document.addEventListener('keydown', (e) => {
 // ========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    setupEmailInputValidation();
+    
     // Listen for auth state changes
     window.addEventListener('authStateChanged', (e) => {
         const { isLoggedIn, user } = e.detail;
