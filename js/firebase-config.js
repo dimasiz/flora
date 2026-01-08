@@ -257,13 +257,57 @@ async function updateUserProfile(userId, updates) {
 // DATABASE FUNCTIONS - GAME PROGRESS
 // ========================================
 
+function getLocalAggregatedProgress() {
+    try {
+        const raw = localStorage.getItem('overall_progress');
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return null;
+
+        return {
+            totalScore: typeof parsed.totalScore === 'number' ? parsed.totalScore : 0,
+            gamesPlayed: typeof parsed.gamesPlayed === 'number' ? parsed.gamesPlayed : 0
+        };
+    } catch (error) {
+        console.error('❌ Ошибка чтения overall_progress из localStorage:', error);
+        return null;
+    }
+}
+
+function updateLocalAggregatedProgress({ scoreDelta = 0, gamesPlayedDelta = 0 } = {}) {
+    const current = getLocalAggregatedProgress() || { totalScore: 0, gamesPlayed: 0 };
+
+    const updated = {
+        totalScore: current.totalScore + (Number(scoreDelta) || 0),
+        gamesPlayed: current.gamesPlayed + (Number(gamesPlayedDelta) || 0)
+    };
+
+    try {
+        localStorage.setItem('overall_progress', JSON.stringify(updated));
+    } catch (error) {
+        console.error('❌ Ошибка сохранения overall_progress в localStorage:', error);
+    }
+
+    return updated;
+}
+
 // Save game progress to Firebase
 async function saveGameProgress(gameName, level, score, completed = true) {
+    const numericScore = Number(score) || 0;
+    const numericLevel = Number(level) || 1;
+
     const user = getCurrentUser();
     if (!user) {
-        // Save to localStorage if not logged in
         console.log('⚠️ Пользователь не авторизован, сохранение в localStorage');
-        gameProgress.saveProgress(gameName, level, score);
+
+        if (typeof gameProgress !== 'undefined' && typeof gameProgress.saveProgress === 'function') {
+            gameProgress.saveProgress(gameName, numericLevel, numericScore);
+        }
+
+        if (completed) {
+            updateLocalAggregatedProgress({ scoreDelta: numericScore, gamesPlayedDelta: 1 });
+        }
+
         return true;
     }
 
@@ -272,35 +316,58 @@ async function saveGameProgress(gameName, level, score, completed = true) {
         await waitForFirebase();
     } catch (error) {
         console.error('❌ Ошибка ожидания Firebase:', error);
-        gameProgress.saveProgress(gameName, level, score);
+
+        if (typeof gameProgress !== 'undefined' && typeof gameProgress.saveProgress === 'function') {
+            gameProgress.saveProgress(gameName, numericLevel, numericScore);
+        }
+        if (completed) {
+            updateLocalAggregatedProgress({ scoreDelta: numericScore, gamesPlayedDelta: 1 });
+        }
+
         return false;
     }
 
     // Check if Firebase is initialized
     if (!window.firebaseMethods || !firebaseDatabase) {
         console.error('❌ Firebase не инициализирован при попытке сохранить прогресс');
-        // Fallback to localStorage
-        gameProgress.saveProgress(gameName, level, score);
+
+        if (typeof gameProgress !== 'undefined' && typeof gameProgress.saveProgress === 'function') {
+            gameProgress.saveProgress(gameName, numericLevel, numericScore);
+        }
+        if (completed) {
+            updateLocalAggregatedProgress({ scoreDelta: numericScore, gamesPlayedDelta: 1 });
+        }
+
         return false;
     }
 
     try {
-        const { ref, get, set, update } = window.firebaseMethods;
+        const { ref, get, set } = window.firebaseMethods;
         const userId = user.uid;
-        console.log('💾 Сохранение прогресса:', { gameName, level, score, completed, userId });
-        
-        // Get current progress
+        console.log('💾 Сохранение прогресса:', { gameName, level: numericLevel, score: numericScore, completed, userId });
+
         const progressRef = ref(firebaseDatabase, `users/${userId}/progress`);
         const snapshot = await get(progressRef);
-        let progress = snapshot.exists() ? snapshot.val() : {
-            games: {},
-            totalScore: 0,
-            gamesPlayed: 0,
-            levelsCompleted: 0
-        };
-        
-        // Initialize game if not exists
-        if (!progress.games[gameName]) {
+
+        let progress = snapshot.exists() ? snapshot.val() : null;
+        if (!progress || typeof progress !== 'object') {
+            progress = {
+                games: {},
+                totalScore: 0,
+                gamesPlayed: 0,
+                levelsCompleted: 0
+            };
+        }
+
+        if (!progress.games || typeof progress.games !== 'object') {
+            progress.games = {};
+        }
+
+        progress.totalScore = Number(progress.totalScore) || 0;
+        progress.gamesPlayed = Number(progress.gamesPlayed) || 0;
+        progress.levelsCompleted = Number(progress.levelsCompleted) || 0;
+
+        if (!progress.games[gameName] || typeof progress.games[gameName] !== 'object') {
             progress.games[gameName] = {
                 completedLevels: [],
                 highScores: {},
@@ -310,7 +377,6 @@ async function saveGameProgress(gameName, level, score, completed = true) {
 
         const gameData = progress.games[gameName];
 
-        // Validate game data structure
         if (!Array.isArray(gameData.completedLevels)) {
             gameData.completedLevels = [];
         }
@@ -318,47 +384,53 @@ async function saveGameProgress(gameName, level, score, completed = true) {
             gameData.highScores = {};
         }
 
-        // Update level completion
-        if (completed && !gameData.completedLevels.includes(level)) {
-            gameData.completedLevels.push(level);
-            progress.levelsCompleted = (progress.levelsCompleted || 0) + 1;
-        }
-        
-        // Update high score
-        if (!gameData.highScores[level] || score > gameData.highScores[level]) {
-            const scoreDiff = score - (gameData.highScores[level] || 0);
-            gameData.highScores[level] = score;
-            progress.totalScore = (progress.totalScore || 0) + scoreDiff;
+        const levelAlreadyCompleted = gameData.completedLevels.includes(numericLevel) ||
+            gameData.completedLevels.includes(String(numericLevel));
+
+        if (completed && !levelAlreadyCompleted) {
+            gameData.completedLevels.push(numericLevel);
+            progress.levelsCompleted += 1;
         }
 
-        // Update last played
+        if (completed) {
+            progress.gamesPlayed += 1;
+            progress.totalScore += numericScore;
+            updateLocalAggregatedProgress({ scoreDelta: numericScore, gamesPlayedDelta: 1 });
+        }
+
+        const currentHighScore = Number(gameData.highScores[numericLevel]) || 0;
+        if (numericScore > currentHighScore) {
+            gameData.highScores[numericLevel] = numericScore;
+        }
+
         gameData.lastPlayed = new Date().toISOString();
 
-        // Calculate gamesPlayed based on games with at least one completed level
-        progress.gamesPlayed = Object.values(progress.games).filter(g =>
-            g.completedLevels && g.completedLevels.length > 0
-        ).length;
-
-        // Save to Firebase
         await set(progressRef, progress);
-        
-        // Also save to localStorage as backup
-        gameProgress.saveProgress(gameName, level, score);
-        
-        console.log('✅ Прогресс сохранён в Firebase:', { gameName, level, score, completed });
+
+        if (typeof gameProgress !== 'undefined' && typeof gameProgress.saveProgress === 'function') {
+            gameProgress.saveProgress(gameName, numericLevel, numericScore);
+        }
+
+        console.log('✅ Прогресс сохранён в Firebase:', { gameName, level: numericLevel, score: numericScore, completed });
         return true;
     } catch (error) {
         console.error('❌ Ошибка сохранения прогресса в Firebase:', error);
         console.error('Детали ошибки:', {
             gameName,
-            level,
-            score,
+            level: numericLevel,
+            score: numericScore,
             completed,
             errorMessage: error.message,
             errorCode: error.code
         });
-        // Fallback to localStorage
-        gameProgress.saveProgress(gameName, level, score);
+
+        if (typeof gameProgress !== 'undefined' && typeof gameProgress.saveProgress === 'function') {
+            gameProgress.saveProgress(gameName, numericLevel, numericScore);
+        }
+        if (completed) {
+            updateLocalAggregatedProgress({ scoreDelta: numericScore, gamesPlayedDelta: 1 });
+        }
+
         return false;
     }
 }
@@ -403,13 +475,16 @@ async function getAllProgressStats() {
 
         const snapshot = await get(ref(firebaseDatabase, `users/${userId}/progress`));
         if (snapshot.exists()) {
-            const stats = snapshot.val();
-            // Recalculate gamesPlayed to ensure it's correct
-            if (stats.games) {
-                stats.gamesPlayed = Object.values(stats.games).filter(g =>
-                    g.completedLevels && g.completedLevels.length > 0
-                ).length;
+            const stats = snapshot.val() || {};
+
+            if (!stats.games || typeof stats.games !== 'object') {
+                stats.games = {};
             }
+
+            stats.totalScore = Number(stats.totalScore) || 0;
+            stats.gamesPlayed = Number(stats.gamesPlayed) || 0;
+            stats.levelsCompleted = Number(stats.levelsCompleted) || 0;
+
             return stats;
         }
         return {
@@ -427,28 +502,30 @@ async function getAllProgressStats() {
 // Get local progress stats (for non-logged users)
 function getLocalProgressStats() {
     const games = ['findMe', 'whoEats', 'puzzle', 'whoLives', 'truthMyth'];
-    let totalScore = 0;
+    let fallbackTotalScore = 0;
     let levelsCompleted = 0;
-    let gamesProgress = {};
-    
+    const gamesProgress = {};
+
     games.forEach(game => {
         const progress = gameProgress.getProgress(game);
         gamesProgress[game] = progress;
         levelsCompleted += progress.completedLevels.length;
+
         Object.values(progress.highScores).forEach(score => {
-            totalScore += score;
+            fallbackTotalScore += score;
         });
     });
-    
-    // Calculate gamesPlayed based on games with at least one completed level
-    const gamesPlayed = Object.values(gamesProgress).filter(g =>
+
+    const fallbackGamesPlayed = Object.values(gamesProgress).filter(g =>
         g.completedLevels && g.completedLevels.length > 0
     ).length;
 
+    const overall = getLocalAggregatedProgress();
+
     return {
         games: gamesProgress,
-        totalScore,
-        gamesPlayed,
+        totalScore: overall ? overall.totalScore : fallbackTotalScore,
+        gamesPlayed: overall ? overall.gamesPlayed : fallbackGamesPlayed,
         levelsCompleted
     };
 }
