@@ -110,11 +110,17 @@ window.waitForFirebase = waitForFirebase;
 async function registerUser(email, password, displayName) {
     await waitForFirebase();
 
+    if (typeof email === 'string' && email.trimStart() !== email) {
+        return { success: false, error: 'Email не должен начинаться с пробела' };
+    }
+
+    const normalizedEmail = typeof email === 'string' ? email.trim() : email;
+
     try {
         const { createUserWithEmailAndPassword, updateProfile } = window.firebaseMethods;
 
         // Create user
-        const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(firebaseAuth, normalizedEmail, password);
         const user = userCredential.user;
         
         // Update display name
@@ -123,7 +129,7 @@ async function registerUser(email, password, displayName) {
         // Create user profile in database
         await createUserProfile(user.uid, {
             displayName: displayName,
-            email: email,
+            email: normalizedEmail,
             createdAt: new Date().toISOString(),
             avatar: getRandomAvatar()
         });

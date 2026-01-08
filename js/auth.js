@@ -131,13 +131,21 @@ async function handleRegister(event) {
     
     // Clear previous errors
     clearFormErrors();
-    
-    // Validation: No leading spaces
-    if (nameRaw.startsWith(' ') || emailRaw.startsWith(' ') || passwordRaw.startsWith(' ') || passwordConfirmRaw.startsWith(' ')) {
+
+    const hasLeadingWhitespace = (value) => typeof value === 'string' && value.trimStart().length !== value.length;
+
+    // Validation: Email must not start with a space
+    if (hasLeadingWhitespace(emailRaw)) {
+        showFormError('register-error', 'Email не должен начинаться с пробела');
+        return;
+    }
+
+    // Validation: No leading spaces in other fields
+    if (hasLeadingWhitespace(nameRaw) || hasLeadingWhitespace(passwordRaw) || hasLeadingWhitespace(passwordConfirmRaw)) {
         showFormError('register-error', 'Поля не должны начинаться с пробела');
         return;
     }
-    
+
     // Validation: All fields required
     if (!name || !email || !password || !passwordConfirm) {
         showFormError('register-error', 'Заполните все поля');
