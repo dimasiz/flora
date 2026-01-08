@@ -92,6 +92,9 @@ async function loadProfileData(user) {
     // Update achievements
     updateAchievements(stats);
     
+    // Update recent activity
+    updateRecentActivity(stats);
+    
     // Check for new achievements and show notifications
     checkForNewAchievements(stats, user.uid);
     
@@ -103,6 +106,7 @@ async function loadProfileData(user) {
             updateStats(updatedStats);
             updateGamesProgress(updatedStats);
             updateAchievements(updatedStats);
+            updateRecentActivity(updatedStats);
             // Check for new achievements on every update
             checkForNewAchievements(updatedStats, user.uid);
         }).then(unsubscribe => {
@@ -262,6 +266,88 @@ function updateAchievements(stats) {
     });
 }
 
+function updateRecentActivity(stats) {
+    const container = document.getElementById('activity-list');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // Map game IDs from Firebase format to local format
+    const gameIdMap = {
+        'find-me': 'findMe',
+        'who-eats': 'whoEats',
+        'puzzle': 'puzzle',
+        'who-lives': 'whoLives',
+        'truth-myth': 'truthMyth'
+    };
+    
+    // Get games with lastPlayed date and sort by most recent
+    const gamesWithActivity = [];
+    
+    if (stats.games && typeof stats.games === 'object') {
+        Object.entries(stats.games).forEach(([gameId, gameData]) => {
+            if (gameData.lastPlayed) {
+                const localGameId = gameIdMap[gameId] || gameId;
+                const gameInfo = gameNames[localGameId];
+                
+                if (gameInfo) {
+                    gamesWithActivity.push({
+                        gameId,
+                        gameInfo,
+                        lastPlayed: new Date(gameData.lastPlayed),
+                        completedLevels: gameData.completedLevels || [],
+                        highScores: gameData.highScores || {}
+                    });
+                }
+            }
+        });
+    }
+    
+    // Sort by lastPlayed date (most recent first)
+    gamesWithActivity.sort((a, b) => b.lastPlayed.getTime() - a.lastPlayed.getTime());
+    
+    // Take only the last 2 games
+    const recentGames = gamesWithActivity.slice(0, 2);
+    
+    if (recentGames.length === 0) {
+        container.innerHTML = '<p class="no-activity">Пока нет активности. Играй в игры!</p>';
+        return;
+    }
+    
+    recentGames.forEach(game => {
+        const completedCount = game.completedLevels.length;
+        const totalScore = Object.values(game.highScores).reduce((sum, score) => sum + (Number(score) || 0), 0);
+        
+        // Format the date
+        const now = new Date();
+        const diffMs = now.getTime() - game.lastPlayed.getTime();
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffHours / 24);
+        
+        let timeText = '';
+        if (diffDays > 0) {
+            timeText = `${diffDays} дн. назад`;
+        } else if (diffHours > 0) {
+            timeText = `${diffHours} ч. назад`;
+        } else {
+            timeText = 'Меньше часа назад';
+        }
+        
+        const activityItem = document.createElement('div');
+        activityItem.className = 'activity-item';
+        activityItem.innerHTML = `
+            <div class="activity-game-icon">${game.gameInfo.icon}</div>
+            <div class="activity-text">
+                <div><strong>${game.gameInfo.name}</strong></div>
+                <div>${completedCount}/${game.gameInfo.totalLevels} уровней • ${totalScore} баллов</div>
+            </div>
+            <div class="activity-date">${timeText}</div>
+        `;
+        
+        container.appendChild(activityItem);
+    });
+}
+
 // ========================================
 // CLEANUP FUNCTIONS
 // ========================================
@@ -292,3 +378,4 @@ window.addEventListener('hashchange', () => {
 window.loadProfileData = loadProfileData;
 window.updateStats = updateStats;
 window.cleanupProgressListener = cleanupProgressListener;
+window.updateRecentActivity = updateRecentActivity;
