@@ -499,23 +499,51 @@
     background: var(--bg-secondary);
     border-radius: var(--border-radius-small);
     margin-bottom: 10px;
+    transition: var(--transition);
 }
 
-.activity-icon {
-    font-size: 2rem;
+.activity-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.activity-game-icon {
+    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-card);
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .activity-text {
     flex: 1;
 }
 
-.activity-text strong {
+.activity-text div:first-child {
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--text-primary);
+    margin-bottom: 3px;
+}
+
+.activity-text div:last-child {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
 .activity-date {
     font-size: 0.85rem;
     color: var(--text-light);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.activity-icon {
+    font-size: 2rem;
 }
 
 /* Auth Buttons in Header */
