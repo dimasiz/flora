@@ -21,58 +21,86 @@ let firebaseApp = null;
 let firebaseAuth = null;
 var firebaseDatabase = null; // Changed to var for global access
 
+// Firebase initialization state
+let firebaseInitializationPromise = null;
+let isFirebaseReady = false;
+
 // Initialize Firebase when script loads
 async function initializeFirebase() {
-    try {
-        // Dynamic import of Firebase modules
-        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js');
-        const { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js');
-        const { getDatabase, ref, set, get, update, onValue, push } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js');
-        
-        // Initialize Firebase App
-        firebaseApp = initializeApp(firebaseConfig);
-        firebaseAuth = getAuth(firebaseApp);
-        firebaseDatabase = getDatabase(firebaseApp);
-        window.firebaseDatabase = firebaseDatabase; // Make database globally accessible
-        
-        // Store Firebase methods globally
-        window.firebaseMethods = {
-            // Auth methods
-            createUserWithEmailAndPassword,
-            signInWithEmailAndPassword,
-            signOut,
-            updateProfile,
-            onAuthStateChanged,
-            // Database methods
-            ref,
-            set,
-            get,
-            update,
-            onValue,
-            push
-        };
-        
-        console.log('✅ Firebase успешно инициализирован!');
-        
-        // Listen for auth state changes
-        onAuthStateChanged(firebaseAuth, (user) => {
-            if (user) {
-                console.log('👤 Пользователь авторизован:', user.email);
-                window.currentUser = user;
-                updateUIForAuth(true, user);
-            } else {
-                console.log('👤 Пользователь не авторизован');
-                window.currentUser = null;
-                updateUIForAuth(false, null);
-            }
-        });
-        
-        return true;
-    } catch (error) {
-        console.error('❌ Ошибка инициализации Firebase:', error);
-        return false;
+    // If already initializing, return the existing promise
+    if (firebaseInitializationPromise) {
+        return firebaseInitializationPromise;
     }
+
+    firebaseInitializationPromise = (async () => {
+        try {
+            console.log('🔄 Начинаю инициализацию Firebase...');
+
+            // Dynamic import of Firebase modules
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js');
+            const { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js');
+            const { getDatabase, ref, set, get, update, onValue, push } = await import('https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js');
+
+            // Initialize Firebase App
+            firebaseApp = initializeApp(firebaseConfig);
+            firebaseAuth = getAuth(firebaseApp);
+            firebaseDatabase = getDatabase(firebaseApp);
+            window.firebaseDatabase = firebaseDatabase; // Make database globally accessible
+
+            // Store Firebase methods globally
+            window.firebaseMethods = {
+                // Auth methods
+                createUserWithEmailAndPassword,
+                signInWithEmailAndPassword,
+                signOut,
+                updateProfile,
+                onAuthStateChanged,
+                // Database methods
+                ref,
+                set,
+                get,
+                update,
+                onValue,
+                push
+            };
+
+            isFirebaseReady = true;
+            console.log('✅ Firebase успешно инициализирован!');
+
+            // Listen for auth state changes
+            onAuthStateChanged(firebaseAuth, (user) => {
+                if (user) {
+                    console.log('👤 Пользователь авторизован:', user.email);
+                    window.currentUser = user;
+                    updateUIForAuth(true, user);
+                } else {
+                    console.log('👤 Пользователь не авторизован');
+                    window.currentUser = null;
+                    updateUIForAuth(false, null);
+                }
+            });
+
+            return true;
+        } catch (error) {
+            console.error('❌ Ошибка инициализации Firebase:', error);
+            firebaseInitializationPromise = null;
+            return false;
+        }
+    })();
+
+    return firebaseInitializationPromise;
 }
+
+// Wait for Firebase to be ready (can be called by other scripts)
+function waitForFirebase() {
+    if (isFirebaseReady) {
+        return Promise.resolve(true);
+    }
+    return firebaseInitializationPromise || Promise.resolve(false);
+}
+
+// Export waitForFirebase globally for use in other scripts
+window.waitForFirebase = waitForFirebase;
 
 // ========================================
 // AUTHENTICATION FUNCTIONS
@@ -80,9 +108,11 @@ async function initializeFirebase() {
 
 // Register new user
 async function registerUser(email, password, displayName) {
+    await waitForFirebase();
+
     try {
         const { createUserWithEmailAndPassword, updateProfile } = window.firebaseMethods;
-        
+
         // Create user
         const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
         const user = userCredential.user;
@@ -108,6 +138,8 @@ async function registerUser(email, password, displayName) {
 
 // Login user
 async function loginUser(email, password) {
+    await waitForFirebase();
+
     try {
         const { signInWithEmailAndPassword } = window.firebaseMethods;
         const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
@@ -171,6 +203,7 @@ function getRandomAvatar() {
 
 // Create user profile
 async function createUserProfile(userId, profileData) {
+    await waitForFirebase();
     try {
         const { ref, set } = window.firebaseMethods;
         await set(ref(firebaseDatabase, `users/${userId}/profile`), profileData);
@@ -193,6 +226,7 @@ async function createUserProfile(userId, profileData) {
 
 // Get user profile
 async function getUserProfile(userId) {
+    await waitForFirebase();
     try {
         const { ref, get } = window.firebaseMethods;
         const snapshot = await get(ref(firebaseDatabase, `users/${userId}`));
@@ -208,6 +242,7 @@ async function getUserProfile(userId) {
 
 // Update user profile
 async function updateUserProfile(userId, updates) {
+    await waitForFirebase();
     try {
         const { ref, update } = window.firebaseMethods;
         await update(ref(firebaseDatabase, `users/${userId}/profile`), updates);
@@ -227,13 +262,32 @@ async function saveGameProgress(gameName, level, score, completed = true) {
     const user = getCurrentUser();
     if (!user) {
         // Save to localStorage if not logged in
+        console.log('⚠️ Пользователь не авторизован, сохранение в localStorage');
         gameProgress.saveProgress(gameName, level, score);
         return true;
     }
-    
+
+    // Wait for Firebase to be ready
+    try {
+        await waitForFirebase();
+    } catch (error) {
+        console.error('❌ Ошибка ожидания Firebase:', error);
+        gameProgress.saveProgress(gameName, level, score);
+        return false;
+    }
+
+    // Check if Firebase is initialized
+    if (!window.firebaseMethods || !firebaseDatabase) {
+        console.error('❌ Firebase не инициализирован при попытке сохранить прогресс');
+        // Fallback to localStorage
+        gameProgress.saveProgress(gameName, level, score);
+        return false;
+    }
+
     try {
         const { ref, get, set, update } = window.firebaseMethods;
         const userId = user.uid;
+        console.log('💾 Сохранение прогресса:', { gameName, level, score, completed, userId });
         
         // Get current progress
         const progressRef = ref(firebaseDatabase, `users/${userId}/progress`);
@@ -253,9 +307,17 @@ async function saveGameProgress(gameName, level, score, completed = true) {
                 lastPlayed: null
             };
         }
-        
+
         const gameData = progress.games[gameName];
-        
+
+        // Validate game data structure
+        if (!Array.isArray(gameData.completedLevels)) {
+            gameData.completedLevels = [];
+        }
+        if (!gameData.highScores || typeof gameData.highScores !== 'object') {
+            gameData.highScores = {};
+        }
+
         // Update level completion
         if (completed && !gameData.completedLevels.includes(level)) {
             gameData.completedLevels.push(level);
@@ -281,10 +343,18 @@ async function saveGameProgress(gameName, level, score, completed = true) {
         // Also save to localStorage as backup
         gameProgress.saveProgress(gameName, level, score);
         
-        console.log('✅ Прогресс сохранён в Firebase');
+        console.log('✅ Прогресс сохранён в Firebase:', { gameName, level, score, completed });
         return true;
     } catch (error) {
-        console.error('❌ Ошибка сохранения прогресса:', error);
+        console.error('❌ Ошибка сохранения прогресса в Firebase:', error);
+        console.error('Детали ошибки:', {
+            gameName,
+            level,
+            score,
+            completed,
+            errorMessage: error.message,
+            errorCode: error.code
+        });
         // Fallback to localStorage
         gameProgress.saveProgress(gameName, level, score);
         return false;
@@ -297,7 +367,9 @@ async function getGameProgressFromFirebase(gameName) {
     if (!user) {
         return gameProgress.getProgress(gameName);
     }
-    
+
+    await waitForFirebase();
+
     try {
         const { ref, get } = window.firebaseMethods;
         const userId = user.uid;
@@ -320,7 +392,9 @@ async function getAllProgressStats() {
         // Return local stats
         return getLocalProgressStats();
     }
-    
+
+    await waitForFirebase();
+
     try {
         const { ref, get } = window.firebaseMethods;
         const userId = user.uid;
@@ -370,12 +444,14 @@ function getLocalProgressStats() {
 // ========================================
 
 // Listen to progress updates in real-time
-function listenToProgressUpdates(userId, callback) {
+async function listenToProgressUpdates(userId, callback) {
     if (!userId || !callback) {
         console.error('❌ userId и callback обязательны для listenToProgressUpdates');
         return null;
     }
-    
+
+    await waitForFirebase();
+
     try {
         const { ref, onValue } = window.firebaseMethods;
         const progressRef = ref(firebaseDatabase, `users/${userId}/progress`);
@@ -1602,6 +1678,23 @@ class Database {
 
 // Global database instance
 const db = new Database();
+window.db = db; // Make db globally accessible for debugging
+
+// Export Firebase functions globally for use in other scripts
+window.saveGameProgress = saveGameProgress;
+window.getGameProgressFromFirebase = getGameProgressFromFirebase;
+window.getAllProgressStats = getAllProgressStats;
+window.getUserProfile = getUserProfile;
+window.updateUserProfile = updateUserProfile;
+window.registerUser = registerUser;
+window.loginUser = loginUser;
+window.logoutUser = logoutUser;
+window.getCurrentUser = getCurrentUser;
+window.isLoggedIn = isLoggedIn;
+window.listenToProgressUpdates = listenToProgressUpdates;
+window.stopListeningToProgress = stopListeningToProgress;
+
+console.log('✅ Firebase конфигурация загружена');
 
 // ========================================
 // INITIALIZE FIREBASE ON LOAD
