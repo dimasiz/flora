@@ -134,8 +134,14 @@ async function handleRegister(event) {
 
     const hasLeadingWhitespace = (value) => typeof value === 'string' && value.trimStart().length !== value.length;
 
-    // Validation: Email must not contain spaces
-    if (typeof emailRaw === 'string' && emailRaw !== emailRaw.trim()) {
+    // Validation: Email must not start with space
+    if (hasLeadingWhitespace(emailRaw)) {
+        showFormError('register-error', 'Email не должен начинаться с пробела');
+        return;
+    }
+
+    // Validation: Email must not contain spaces anywhere
+    if (typeof emailRaw === 'string' && emailRaw.includes(' ')) {
         showFormError('register-error', 'Email не должен содержать пробелов');
         return;
     }
