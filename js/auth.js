@@ -3,6 +3,32 @@
 // ========================================
 
 // ========================================
+// EMAIL VALIDATION FUNCTIONS
+// ========================================
+
+// Check if value has leading whitespace
+function hasLeadingWhitespace(value) {
+    return typeof value === 'string' && value.startsWith(' ');
+}
+
+// Validate email for whitespace issues
+function validateEmail(emailRaw, errorElementId) {
+    // Validation: Email не должен начинаться с пробела
+    if (hasLeadingWhitespace(emailRaw)) {
+        showFormError(errorElementId, 'Email не должен начинаться с пробела');
+        return false;
+    }
+
+    // Validation: Email не должен содержать пробелов
+    if (typeof emailRaw === 'string' && emailRaw.includes(' ')) {
+        showFormError(errorElementId, 'Email не должен содержать пробелов');
+        return false;
+    }
+
+    return true;
+}
+
+// ========================================
 // MODAL FUNCTIONS
 // ========================================
 
@@ -70,12 +96,18 @@ function showFormError(formId, message) {
 async function handleLogin(event) {
     event.preventDefault();
     
-    const email = document.getElementById('login-email').value.trim();
+    const emailRaw = document.getElementById('login-email').value;
+    const email = emailRaw.trim();
     const password = document.getElementById('login-password').value;
     const submitBtn = event.target.querySelector('button[type="submit"]');
     
     // Clear previous errors
     clearFormErrors();
+    
+    // Validate email for whitespace
+    if (!validateEmail(emailRaw, 'login-error')) {
+        return;
+    }
     
     // Validation
     if (!email || !password) {
@@ -132,17 +164,8 @@ async function handleRegister(event) {
     // Clear previous errors
     clearFormErrors();
 
-    const hasLeadingWhitespace = (value) => typeof value === 'string' && value.trimStart().length !== value.length;
-
-    // Validation: Email must not start with space
-    if (hasLeadingWhitespace(emailRaw)) {
-        showFormError('register-error', 'Email не должен начинаться с пробела');
-        return;
-    }
-
-    // Validation: Email must not contain spaces anywhere
-    if (typeof emailRaw === 'string' && emailRaw.includes(' ')) {
-        showFormError('register-error', 'Email не должен содержать пробелов');
+    // Validate email for whitespace
+    if (!validateEmail(emailRaw, 'register-error')) {
         return;
     }
 
@@ -380,38 +403,42 @@ function setupEmailInputValidation() {
 
     if (registerEmailInput) {
         registerEmailInput.addEventListener('keydown', function(e) {
-            // Prevent spaces at the beginning
-            if (e.key === ' ' && e.target.selectionStart === 0) {
+            // Prevent any spaces in email
+            if (e.key === ' ') {
                 e.preventDefault();
-                showFormError('register-error', 'Email не должен начинаться с пробела');
+                showFormError('register-error', 'Email не должен содержать пробелов');
                 setTimeout(() => clearFormErrors(), 3000);
             }
         });
         
         registerEmailInput.addEventListener('input', function(e) {
             const value = e.target.value;
-            // Remove leading spaces on paste or drag
-            if (value.startsWith(' ')) {
-                e.target.value = value.trimStart();
+            // Remove all spaces on paste or drag
+            if (value.includes(' ')) {
+                e.target.value = value.replace(/ /g, '');
+                showFormError('register-error', 'Email не должен содержать пробелов');
+                setTimeout(() => clearFormErrors(), 3000);
             }
         });
     }
 
     if (loginEmailInput) {
         loginEmailInput.addEventListener('keydown', function(e) {
-            // Prevent spaces at the beginning
-            if (e.key === ' ' && e.target.selectionStart === 0) {
+            // Prevent any spaces in email
+            if (e.key === ' ') {
                 e.preventDefault();
-                showFormError('login-error', 'Email не должен начинаться с пробела');
+                showFormError('login-error', 'Email не должен содержать пробелов');
                 setTimeout(() => clearFormErrors(), 3000);
             }
         });
         
         loginEmailInput.addEventListener('input', function(e) {
             const value = e.target.value;
-            // Remove leading spaces on paste or drag
-            if (value.startsWith(' ')) {
-                e.target.value = value.trimStart();
+            // Remove all spaces on paste or drag
+            if (value.includes(' ')) {
+                e.target.value = value.replace(/ /g, '');
+                showFormError('login-error', 'Email не должен содержать пробелов');
+                setTimeout(() => clearFormErrors(), 3000);
             }
         });
     }
