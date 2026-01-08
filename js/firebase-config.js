@@ -1149,7 +1149,7 @@ const localData = {
                 {
                     level: 2,
                     pairs: [
-                        { animal: '🦊', animalName: 'Лиса', food: '🐭', foodName: 'Мышка' },
+                        { animal: '🦊', animalName: 'Лиса', food: '🐔', foodName: 'Курочка' },
                         { animal: '🦔', animalName: 'Ёжик', food: '🐛', foodName: 'Жучок' },
                         { animal: '🦉', animalName: 'Сова', food: '🐭', foodName: 'Мышка' },
                         { animal: '🐝', animalName: 'Пчела', food: '🌸', foodName: 'Цветок' },
