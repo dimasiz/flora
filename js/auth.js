@@ -373,21 +373,39 @@ function setupEmailInputValidation() {
     const loginEmailInput = document.getElementById('login-email');
 
     if (registerEmailInput) {
+        registerEmailInput.addEventListener('keydown', function(e) {
+            // Prevent spaces at the beginning
+            if (e.key === ' ' && e.target.selectionStart === 0) {
+                e.preventDefault();
+                showFormError('register-error', 'Email не должен начинаться с пробела');
+                setTimeout(() => clearFormErrors(), 3000);
+            }
+        });
+        
         registerEmailInput.addEventListener('input', function(e) {
             const value = e.target.value;
-            // Remove all spaces
-            if (value !== value.trim()) {
-                e.target.value = value.replace(/\s/g, '');
+            // Remove leading spaces on paste or drag
+            if (value.startsWith(' ')) {
+                e.target.value = value.trimStart();
             }
         });
     }
 
     if (loginEmailInput) {
+        loginEmailInput.addEventListener('keydown', function(e) {
+            // Prevent spaces at the beginning
+            if (e.key === ' ' && e.target.selectionStart === 0) {
+                e.preventDefault();
+                showFormError('login-error', 'Email не должен начинаться с пробела');
+                setTimeout(() => clearFormErrors(), 3000);
+            }
+        });
+        
         loginEmailInput.addEventListener('input', function(e) {
             const value = e.target.value;
-            // Remove all spaces
-            if (value !== value.trim()) {
-                e.target.value = value.replace(/\s/g, '');
+            // Remove leading spaces on paste or drag
+            if (value.startsWith(' ')) {
+                e.target.value = value.trimStart();
             }
         });
     }
