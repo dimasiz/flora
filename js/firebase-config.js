@@ -330,13 +330,15 @@ async function saveGameProgress(gameName, level, score, completed = true) {
             gameData.highScores[level] = score;
             progress.totalScore = (progress.totalScore || 0) + scoreDiff;
         }
-        
+
         // Update last played
         gameData.lastPlayed = new Date().toISOString();
-        
-        // Increment games played
-        progress.gamesPlayed = (progress.gamesPlayed || 0) + 1;
-        
+
+        // Calculate gamesPlayed based on games with at least one completed level
+        progress.gamesPlayed = Object.values(progress.games).filter(g =>
+            g.completedLevels && g.completedLevels.length > 0
+        ).length;
+
         // Save to Firebase
         await set(progressRef, progress);
         
@@ -398,10 +400,17 @@ async function getAllProgressStats() {
     try {
         const { ref, get } = window.firebaseMethods;
         const userId = user.uid;
-        
+
         const snapshot = await get(ref(firebaseDatabase, `users/${userId}/progress`));
         if (snapshot.exists()) {
-            return snapshot.val();
+            const stats = snapshot.val();
+            // Recalculate gamesPlayed to ensure it's correct
+            if (stats.games) {
+                stats.gamesPlayed = Object.values(stats.games).filter(g =>
+                    g.completedLevels && g.completedLevels.length > 0
+                ).length;
+            }
+            return stats;
         }
         return {
             games: {},
@@ -431,10 +440,15 @@ function getLocalProgressStats() {
         });
     });
     
+    // Calculate gamesPlayed based on games with at least one completed level
+    const gamesPlayed = Object.values(gamesProgress).filter(g =>
+        g.completedLevels && g.completedLevels.length > 0
+    ).length;
+
     return {
         games: gamesProgress,
         totalScore,
-        gamesPlayed: 0,
+        gamesPlayed,
         levelsCompleted
     };
 }
