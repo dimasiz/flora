@@ -110,8 +110,8 @@ window.waitForFirebase = waitForFirebase;
 async function registerUser(email, password, displayName) {
     await waitForFirebase();
 
-    if (typeof email === 'string' && email.trimStart() !== email) {
-        return { success: false, error: 'Email не должен начинаться с пробела' };
+    if (typeof email === 'string' && email !== email.trim()) {
+        return { success: false, error: 'Email не должен содержать пробелов' };
     }
 
     const normalizedEmail = typeof email === 'string' ? email.trim() : email;
@@ -146,9 +146,15 @@ async function registerUser(email, password, displayName) {
 async function loginUser(email, password) {
     await waitForFirebase();
 
+    if (typeof email === 'string' && email !== email.trim()) {
+        return { success: false, error: 'Email не должен содержать пробелов' };
+    }
+
+    const normalizedEmail = typeof email === 'string' ? email.trim() : email;
+
     try {
         const { signInWithEmailAndPassword } = window.firebaseMethods;
-        const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
+        const userCredential = await signInWithEmailAndPassword(firebaseAuth, normalizedEmail, password);
         console.log('✅ Пользователь вошёл:', userCredential.user.email);
         return { success: true, user: userCredential.user };
     } catch (error) {
