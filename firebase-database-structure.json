@@ -1,0 +1,136 @@
+{
+  "flora-f1ce9-default-rtdb": {
+    "users": {
+      "$userId": {
+        "profile": {
+          "displayName": "string",
+          "email": "string",
+          "avatar": "string (emoji)",
+          "createdAt": "ISO date string"
+        },
+        "progress": {
+          "totalScore": "number",
+          "gamesPlayed": "number",
+          "levelsCompleted": "number",
+          "games": {
+            "findMe": {
+              "completedLevels": ["1", "2"],
+              "highScores": {
+                "1": "number",
+                "2": "number"
+              },
+              "lastPlayed": "ISO date string"
+            },
+            "whoEats": {
+              "completedLevels": ["1", "2"],
+              "highScores": {},
+              "lastPlayed": "ISO date string"
+            },
+            "puzzle": {
+              "completedLevels": ["1", "2", "3", "4", "5", "6"],
+              "highScores": {},
+              "lastPlayed": "ISO date string"
+            },
+            "whoLives": {
+              "completedLevels": ["1", "2"],
+              "highScores": {},
+              "lastPlayed": "ISO date string"
+            },
+            "truthMyth": {
+              "completedLevels": ["1", "2"],
+              "highScores": {
+                "1": "number",
+                "2": "number"
+              },
+              "lastPlayed": "ISO date string"
+            }
+          }
+        }
+      }
+    },
+    "encyclopedia": {
+      "animals": {
+        "$animalId": {
+          "name": "string",
+          "emoji": "string",
+          "category": "animals",
+          "type": "mammals | birds | fish | insects",
+          "habitat": "forest | river | field | swamp",
+          "typeName": "string",
+          "habitatName": "string",
+          "facts": ["array of strings"]
+        }
+      },
+      "plants": {
+        "$plantId": {
+          "name": "string",
+          "emoji": "string",
+          "category": "plants",
+          "type": "trees | flowers | herbs",
+          "habitat": "forest | river | field | swamp",
+          "typeName": "string",
+          "habitatName": "string",
+          "facts": ["array of strings"]
+        }
+      }
+    },
+    "games": {
+      "findMe": {
+        "levels": ["array of level data"]
+      },
+      "whoEats": {
+        "levels": ["array of level data"]
+      },
+      "puzzle": {
+        "levels": ["array of level data"]
+      },
+      "whoLives": {
+        "levels": ["array of level data"]
+      },
+      "truthMyth": {
+        "levels": ["array of level data"]
+      }
+    },
+    "mapMarkers": {
+      "$markerId": {
+        "name": "string",
+        "emoji": "string",
+        "type": "animal | plant",
+        "position": {
+          "x": "number (0-100)",
+          "y": "number (0-80)"
+        },
+        "facts": ["array of strings"],
+        "habitat": "string"
+      }
+    }
+  },
+  
+  "_description": {
+    "users": "Пользователи приложения с профилями и прогрессом",
+    "encyclopedia": "Энциклопедия животных и растений",
+    "games": "Данные для мини-игр (уровни, вопросы и т.д.)",
+    "mapMarkers": "Маркеры на интерактивной карте Беларуси"
+  },
+  
+  "_security_rules": {
+    "users": {
+      "$userId": {
+        ".read": "auth != null && auth.uid == $userId",
+        ".write": "auth != null && auth.uid == $userId"
+      }
+    },
+    "encyclopedia": {
+      ".read": true,
+      ".write": false
+    },
+    "games": {
+      ".read": true,
+      ".write": false
+    },
+    "mapMarkers": {
+      ".read": true,
+      ".write": false
+    }
+  }
+}

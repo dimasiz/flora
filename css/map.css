@@ -1,0 +1,491 @@
+/* ========================================
+   MAP PAGE STYLES
+   ======================================== */
+
+.map-page {
+    background: 
+        radial-gradient(circle at 30% 50%, rgba(100, 181, 246, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 70% 30%, rgba(129, 199, 132, 0.1) 0%, transparent 40%);
+}
+
+/* Map Legend */
+.map-legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    padding: 20px;
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.legend-icon {
+    font-size: 1.5rem;
+    padding: 8px;
+    border-radius: var(--border-radius-small);
+}
+
+.legend-icon.animals {
+    background: var(--color-animals-light);
+}
+
+.legend-icon.plants {
+    background: var(--color-plants-light);
+}
+
+.legend-hint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    padding-left: 20px;
+    border-left: 2px solid var(--bg-accent);
+}
+
+.legend-hint span {
+    font-size: 1.2rem;
+}
+
+/* ========================================
+   MAP CONTAINER
+   ======================================== */
+.map-container {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+    border-radius: var(--border-radius-large);
+    padding: 30px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 30px;
+    border: 3px solid #64b5f6;
+}
+
+.belarus-map {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    aspect-ratio: 4/3;
+    background: #ffffff;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+}
+
+/* ========================================
+   MAP IMAGE
+   ======================================== */
+.map-image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.map-base-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none; /* Hidden by default, shown when image loads */
+}
+
+.map-base-image.loaded {
+    display: block;
+}
+
+/* SVG Fallback (shown when no image) */
+.map-fallback-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.map-base-image.loaded + .map-fallback-svg {
+    display: none;
+}
+
+/* Region styles in SVG */
+.region {
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.country-border {
+    pointer-events: none;
+}
+
+/* ========================================
+   REGION OVERLAYS (hidden - no fill)
+   ======================================== */
+.region-overlays {
+    display: none;
+}
+
+/* ========================================
+   MAP MARKERS
+   ======================================== */
+.map-markers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.map-marker {
+    position: absolute;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: var(--transition);
+    z-index: 10;
+    transform: translate(-50%, -50%);
+}
+
+.marker-icon {
+    font-size: 2rem;
+    display: block;
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.4));
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 6px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.map-marker.animal .marker-icon {
+    border-color: var(--color-animals);
+    background: linear-gradient(135deg, #fff5f0 0%, #ffe0d6 100%);
+}
+
+.map-marker.plant .marker-icon {
+    border-color: var(--color-plants);
+    background: linear-gradient(135deg, #f0fff0 0%, #d6f5d6 100%);
+}
+
+@keyframes markerFloat {
+    0%, 100% {
+        transform: translate(-50%, -50%) translateY(0);
+    }
+    50% {
+        transform: translate(-50%, -50%) translateY(-4px);
+    }
+}
+
+.map-marker:nth-child(3n) .marker-icon { animation: markerFloat 3s ease-in-out infinite; }
+.map-marker:nth-child(3n+1) .marker-icon { animation: markerFloat 3.5s ease-in-out infinite 0.5s; }
+.map-marker:nth-child(3n+2) .marker-icon { animation: markerFloat 4s ease-in-out infinite 1s; }
+
+.map-marker:hover .marker-icon {
+    transform: scale(1.5);
+    filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.5));
+    z-index: 100;
+}
+
+.map-marker.active .marker-icon {
+    transform: scale(1.6);
+    animation: markerPulse 0.5s ease-out;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.7);
+}
+
+@keyframes markerPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.7); }
+    100% { transform: scale(1.6); }
+}
+
+/* Marker Tooltip */
+.marker-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+    padding: 8px 14px;
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    pointer-events: none;
+    border: 2px solid var(--primary-green);
+    z-index: 200;
+}
+
+.map-marker.animal .marker-tooltip {
+    border-color: var(--color-animals);
+}
+
+.map-marker.plant .marker-tooltip {
+    border-color: var(--color-plants);
+}
+
+.marker-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: #ffffff;
+}
+
+.map-marker:hover .marker-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-12px);
+}
+
+.map-marker:hover {
+    z-index: 100;
+}
+
+/* ========================================
+   INFO PANEL
+   ======================================== */
+.info-panel {
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.info-panel-content {
+    padding: 30px;
+}
+
+.info-placeholder {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+}
+
+.placeholder-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.info-placeholder p {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* Info Content when marker is selected */
+.info-content {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.info-image {
+    font-size: 5rem;
+    flex-shrink: 0;
+    background: var(--bg-accent);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-details {
+    flex-grow: 1;
+}
+
+.info-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.info-category {
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: var(--border-radius-small);
+    font-weight: 600;
+}
+
+.info-category.animal {
+    background: var(--color-animals-light);
+    color: #d84315;
+}
+
+.info-category.plant {
+    background: var(--color-plants-light);
+    color: #2e7d32;
+}
+
+.info-facts {
+    margin-top: 15px;
+}
+
+.info-facts p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 10px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.info-facts p::before {
+    content: '🌟';
+    position: absolute;
+    left: 0;
+    font-size: 0.9rem;
+}
+
+.info-habitat {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px dashed var(--bg-accent);
+}
+
+.info-habitat span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary-blue-light);
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary-blue-dark);
+}
+
+/* Close button for info */
+.info-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--bg-accent);
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.info-close:hover {
+    background: var(--color-animals);
+    color: var(--text-white);
+}
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+@media (max-width: 768px) {
+    .map-legend {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .legend-hint {
+        padding-left: 0;
+        border-left: none;
+        padding-top: 10px;
+        border-top: 2px solid var(--bg-accent);
+    }
+    
+    .map-container {
+        padding: 15px;
+    }
+    
+    .marker-icon {
+        font-size: 1.6rem;
+        padding: 4px;
+    }
+    
+    .info-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .info-title {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .info-facts p {
+        padding-left: 0;
+        text-align: left;
+    }
+    
+    .info-facts p::before {
+        position: static;
+        margin-right: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .belarus-map {
+        aspect-ratio: 1;
+    }
+    
+    .marker-icon {
+        font-size: 1.4rem;
+        padding: 3px;
+    }
+    
+    .marker-tooltip {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+    
+    .info-image {
+        font-size: 4rem;
+        padding: 15px;
+    }
+    
+    .info-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* ========================================
+   ADDITIONAL MAP DECORATIONS
+   ======================================== */
+.map-decoration {
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0.2;
+    pointer-events: none;
+    animation: float 6s ease-in-out infinite;
+}
+
+.map-decoration.tree-1 { top: 3%; left: 5%; }
+.map-decoration.tree-2 { top: 5%; right: 8%; animation-delay: 1s; }
+.map-decoration.cloud-1 { top: 2%; left: 25%; animation-delay: 2s; }
+.map-decoration.bird-1 { top: 4%; right: 20%; animation-delay: 3s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}

@@ -1,0 +1,906 @@
+/* ========================================
+   GAMES PAGE STYLES
+   ======================================== */
+
+/* Games Menu */
+.games-page {
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 213, 79, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(129, 199, 132, 0.1) 0%, transparent 40%);
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.game-card {
+    background: var(--bg-card);
+    border: 3px solid transparent;
+    border-radius: var(--border-radius);
+    padding: 30px 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary-yellow), var(--primary-green));
+    transform: scaleX(0);
+    transition: var(--transition);
+}
+
+.game-card:hover::before {
+    transform: scaleX(1);
+}
+
+.game-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-green-light);
+}
+
+.game-card:active {
+    transform: translateY(-4px);
+}
+
+.game-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    display: block;
+    transition: var(--transition);
+}
+
+.game-card:hover .game-icon {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.game-card h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.game-card p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.game-levels {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.game-levels .level {
+    background: var(--bg-accent);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-small);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.game-levels .level:hover {
+    background: var(--primary-green-light);
+    color: var(--text-white);
+}
+
+/* ========================================
+   GAME CONTAINER
+   ======================================== */
+.game-container {
+    padding: 30px 0;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.back-to-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 2px solid var(--primary-green);
+    color: var(--primary-green);
+    padding: 12px 20px;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-family);
+}
+
+.back-to-menu:hover {
+    background: var(--primary-green);
+    color: var(--text-white);
+    transform: translateX(-5px);
+}
+
+.back-to-menu span {
+    font-size: 1.2rem;
+}
+
+.game-info {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.game-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.game-score {
+    background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--primary-yellow-dark) 100%);
+    padding: 12px 25px;
+    border-radius: var(--border-radius);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    box-shadow: var(--shadow-soft);
+}
+
+.game-score span {
+    font-size: 1.5rem;
+}
+
+/* Game Instruction */
+.game-instruction {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-accent) 100%);
+    padding: 20px 25px;
+    border-radius: var(--border-radius);
+    margin-bottom: 25px;
+    box-shadow: var(--shadow-soft);
+    border-left: 5px solid var(--primary-blue);
+}
+
+.instruction-mascot {
+    font-size: 3rem;
+    flex-shrink: 0;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+.instruction-text {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+.sound-btn {
+    background: var(--primary-blue);
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sound-btn:hover {
+    background: var(--primary-blue-dark);
+    transform: scale(1.1);
+}
+
+/* Game Area */
+.game-area {
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    min-height: 400px;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Game Controls */
+.game-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.game-btn {
+    padding: 15px 35px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-family);
+    box-shadow: var(--shadow-soft);
+}
+
+.game-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-medium);
+}
+
+.game-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-menu {
+    background: var(--text-secondary);
+    color: var(--text-white);
+}
+
+.btn-menu:hover:not(:disabled) {
+    background: var(--text-primary);
+}
+
+.btn-restart {
+    background: var(--color-animals);
+    color: var(--text-white);
+}
+
+.btn-restart:hover:not(:disabled) {
+    background: var(--color-animals-light);
+}
+
+.btn-next {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+    color: var(--text-white);
+}
+
+.btn-next:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--primary-green-light) 0%, var(--primary-green) 100%);
+}
+
+/* ========================================
+   RESULT OVERLAY
+   ======================================== */
+.result-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.result-content {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-large);
+    padding: 50px 60px;
+    text-align: center;
+    box-shadow: var(--shadow-hover);
+    max-width: 500px;
+    width: 100%;
+    animation: popIn 0.5s ease-out;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.result-animation {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    animation: celebrationBounce 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes celebrationBounce {
+    from { transform: scale(1) rotate(-5deg); }
+    to { transform: scale(1.1) rotate(5deg); }
+}
+
+.result-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.result-title.success {
+    color: var(--primary-green);
+}
+
+.result-title.fail {
+    color: var(--color-animals);
+}
+
+.result-score {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+}
+
+.result-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   GAME-SPECIFIC STYLES
+   ======================================== */
+
+/* Find Me Game */
+.find-me-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.find-me-item {
+    background: var(--bg-accent);
+    border: 4px solid transparent;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    font-size: 4rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1;
+}
+
+.find-me-item:hover {
+    transform: scale(1.08);
+    border-color: var(--primary-blue);
+    box-shadow: var(--shadow-medium);
+}
+
+.find-me-item.correct {
+    background: var(--primary-green-light);
+    border-color: var(--primary-green);
+    animation: correctPulse 0.5s ease-out;
+}
+
+.find-me-item.wrong {
+    background: var(--color-animals-light);
+    border-color: var(--color-animals);
+    animation: shake 0.5s ease-out;
+}
+
+@keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
+}
+
+/* Who Eats Game */
+.who-eats-container {
+    display: flex;
+    gap: 50px;
+    width: 100%;
+    max-width: 800px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.animals-column,
+.food-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.animal-item,
+.food-item {
+    background: var(--bg-accent);
+    border: 3px solid transparent;
+    border-radius: var(--border-radius);
+    padding: 15px 25px;
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: var(--transition);
+    cursor: grab;
+}
+
+.animal-item {
+    border-color: var(--color-animals-light);
+}
+
+.food-item {
+    border-color: var(--primary-green-light);
+    cursor: grab;
+}
+
+.food-item:active {
+    cursor: grabbing;
+}
+
+.food-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.animal-item.highlight {
+    background: var(--primary-yellow-light);
+    border-color: var(--primary-yellow-dark);
+    transform: scale(1.05);
+}
+
+.animal-item.fed {
+    background: var(--primary-green-light);
+    border-color: var(--primary-green);
+}
+
+.animal-item .animal-name,
+.food-item .food-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Puzzle Game */
+.puzzle-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+.puzzle-pieces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 300px;
+    align-content: flex-start;
+    justify-content: center;
+}
+
+.puzzle-piece {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--border-radius-small);
+    cursor: grab;
+    transition: var(--transition);
+    border: 3px solid var(--primary-blue-light);
+    background-repeat: no-repeat;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.puzzle-piece:active {
+    cursor: grabbing;
+}
+
+.puzzle-piece.dragging {
+    opacity: 0.5;
+}
+
+.puzzle-board {
+    display: grid;
+    gap: 5px;
+    background: var(--bg-accent);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    border: 3px dashed var(--primary-green);
+}
+
+.puzzle-board.grid-3 {
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+}
+
+.puzzle-board.grid-4 {
+    grid-template-columns: repeat(4, 80px);
+    grid-template-rows: repeat(4, 80px);
+}
+
+.puzzle-slot {
+    background: rgba(255, 255, 255, 0.5);
+    border: 2px dashed var(--text-light);
+    border-radius: var(--border-radius-small);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--text-light);
+    font-weight: bold;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.puzzle-slot.highlight {
+    background: var(--primary-yellow-light);
+    border-color: var(--primary-yellow-dark);
+}
+
+.puzzle-slot.filled {
+    border-style: solid;
+    border-color: var(--primary-green);
+}
+
+.puzzle-slot.correct {
+    border-color: var(--primary-green);
+    background-repeat: no-repeat;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Who Lives Where Game */
+.who-lives-container {
+    display: flex;
+    gap: 50px;
+    width: 100%;
+    max-width: 900px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.animals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.habitats-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.draggable-animal {
+    background: var(--bg-accent);
+    border: 3px solid var(--color-animals-light);
+    border-radius: var(--border-radius);
+    padding: 15px 25px;
+    font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: grab;
+    transition: var(--transition);
+}
+
+.draggable-animal:active {
+    cursor: grabbing;
+}
+
+.draggable-animal.dragging {
+    opacity: 0.5;
+}
+
+.draggable-animal .name {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.habitat-zone {
+    background: var(--bg-accent);
+    border: 3px dashed var(--primary-blue);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+}
+
+.habitat-zone.highlight {
+    background: var(--primary-blue-light);
+    border-style: solid;
+}
+
+.habitat-zone .habitat-icon {
+    font-size: 3rem;
+}
+
+.habitat-zone .habitat-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.habitat-zone .placed-animals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+}
+
+.habitat-zone .placed-animal {
+    font-size: 2rem;
+    animation: popIn 0.3s ease-out;
+}
+
+/* Truth or Myth Game */
+.truth-myth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.statement-card {
+    background: linear-gradient(135deg, var(--bg-accent) 0%, var(--primary-blue-light) 100%);
+    border-radius: var(--border-radius);
+    padding: 40px;
+    text-align: center;
+    width: 100%;
+    box-shadow: var(--shadow-soft);
+    position: relative;
+}
+
+.statement-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.statement-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.statement-sound {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary-blue);
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.statement-sound:hover {
+    transform: scale(1.1);
+    background: var(--primary-blue-dark);
+}
+
+.truth-myth-buttons {
+    display: flex;
+    gap: 25px;
+}
+
+.answer-btn {
+    padding: 20px 50px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-family);
+    box-shadow: var(--shadow-soft);
+}
+
+.answer-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-truth {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+    color: var(--text-white);
+}
+
+.btn-myth {
+    background: linear-gradient(135deg, var(--color-animals) 0%, #e64a19 100%);
+    color: var(--text-white);
+}
+
+.answer-btn.correct {
+    animation: correctPulse 0.5s ease-out;
+}
+
+.answer-btn.wrong {
+    animation: shake 0.5s ease-out;
+}
+
+/* Progress indicator */
+.progress-indicator {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.progress-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--text-light);
+    transition: var(--transition);
+}
+
+.progress-dot.active {
+    background: var(--primary-blue);
+    transform: scale(1.2);
+}
+
+.progress-dot.completed {
+    background: var(--primary-green);
+}
+
+.progress-dot.wrong-answer {
+    background: var(--color-animals);
+}
+
+/* Feedback message */
+.feedback-message {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 25px;
+    border-radius: var(--border-radius);
+    font-weight: 700;
+    font-size: 1.1rem;
+    animation: fadeInUp 0.3s ease-out;
+    white-space: nowrap;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.feedback-message.success {
+    background: var(--primary-green);
+    color: var(--text-white);
+}
+
+.feedback-message.error {
+    background: var(--color-animals);
+    color: var(--text-white);
+}
+
+/* Hint message */
+.hint-message {
+    background: var(--primary-yellow-light);
+    padding: 15px 25px;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    border-left: 4px solid var(--primary-yellow-dark);
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+@media (max-width: 768px) {
+    .game-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .game-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .game-title {
+        font-size: 1.5rem;
+    }
+    
+    .game-instruction {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .instruction-text {
+        font-size: 1.1rem;
+    }
+    
+    .game-area {
+        padding: 20px;
+    }
+    
+    .find-me-item {
+        font-size: 3rem;
+        padding: 15px;
+    }
+    
+    .who-eats-container,
+    .who-lives-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .truth-myth-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .answer-btn {
+        width: 100%;
+    }
+    
+    .result-content {
+        padding: 30px;
+    }
+    
+    .result-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .game-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+    
+    .puzzle-board.grid-3 {
+        grid-template-columns: repeat(3, 70px);
+        grid-template-rows: repeat(3, 70px);
+    }
+    
+    .puzzle-board.grid-4 {
+        grid-template-columns: repeat(4, 55px);
+        grid-template-rows: repeat(4, 55px);
+    }
+    
+    .puzzle-pieces {
+        max-width: 250px;
+    }
+}
+
+

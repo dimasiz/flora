@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровая зона - Флора и Фауна Беларуси</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/games.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🌿</span>
+                <span class="logo-text">ФлораФауна</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Главная</a></li>
+                    <li><a href="games.html" class="nav-link active">Игровая зона</a></li>
+                    <li><a href="encyclopedia.html" class="nav-link">Энциклопедия</a></li>
+                    <li><a href="map.html" class="nav-link">Карта</a></li>
+                </ul>
+            </nav>
+            <!-- Auth Buttons (visible when logged out) -->
+            <div class="auth-buttons">
+                <button class="auth-btn btn-login" onclick="openAuthModal('login')">Войти</button>
+                <button class="auth-btn btn-register" onclick="openAuthModal('register')">Регистрация</button>
+            </div>
+            
+            <!-- User Menu (visible when logged in) -->
+            <div class="user-menu" style="display: none;">
+                <a href="profile.html" class="user-profile-link">
+                    <span class="user-avatar">🦊</span>
+                    <span class="user-name">Пользователь</span>
+                </a>
+                <button class="auth-btn btn-logout" onclick="handleLogout()">Выйти</button>
+            </div>
+            
+            <button class="mobile-menu-btn" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="auth-modal" style="display: none;">
+        <div class="auth-modal-overlay" onclick="closeAuthModal()"></div>
+        <div class="auth-modal-content">
+            <button class="close-modal-btn" onclick="closeAuthModal()">×</button>
+            <div class="auth-form login-form" id="login-form">
+                <div class="auth-form-header">
+                    <span class="auth-form-icon">🦊</span>
+                    <h2>Добро пожаловать!</h2>
+                    <p>Войди в свой аккаунт</p>
+                </div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">📧 Email</label>
+                        <input type="email" id="login-email" placeholder="твой@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">🔑 Пароль</label>
+                        <input type="password" id="login-password" placeholder="Твой пароль" required>
+                    </div>
+                    <div class="form-error" id="login-error"></div>
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Войти</span>
+                        <span class="btn-icon">🚀</span>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    Нет аккаунта? <a href="#" onclick="switchAuthForm('register')">Зарегистрируйся!</a>
+                </div>
+            </div>
+            <div class="auth-form register-form" id="register-form" style="display: none;">
+                <div class="auth-form-header">
+                    <span class="auth-form-icon">🎉</span>
+                    <h2>Присоединяйся!</h2>
+                    <p>Создай свой аккаунт</p>
+                </div>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-name">👤 Твоё имя</label>
+                        <input type="text" id="register-name" placeholder="Как тебя зовут?" required minlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">📧 Email</label>
+                        <input type="email" id="register-email" placeholder="твой@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">🔑 Пароль</label>
+                        <input type="password" id="register-password" placeholder="Придумай пароль (мин. 6 символов)" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-confirm">🔑 Повтори пароль</label>
+                        <input type="password" id="register-password-confirm" placeholder="Повтори пароль" required>
+                    </div>
+                    <div class="form-error" id="register-error"></div>
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Создать аккаунт</span>
+                        <span class="btn-icon">✨</span>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    Уже есть аккаунт? <a href="#" onclick="switchAuthForm('login')">Войди!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content games-page">
+        <!-- Games Menu Section -->
+        <section class="games-menu" id="games-menu">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">Игровая зона</h1>
+                    <p class="page-subtitle">Выбирай игру и начинай приключение!</p>
+                </div>
+                
+                <div class="games-grid">
+                    <button class="game-card" data-game="find-me">
+                        <div class="game-icon">🔍</div>
+                        <h3>Найди меня</h3>
+                        <p>Найди спрятавшееся животное среди других</p>
+                        <div class="game-levels">
+                            <span class="level" data-level="1">Уровень 1</span>
+                            <span class="level" data-level="2">Уровень 2</span>
+                        </div>
+                    </button>
+                    
+                    <button class="game-card" data-game="who-eats">
+                        <div class="game-icon">🍎</div>
+                        <h3>Кто что ест?</h3>
+                        <p>Накорми животных правильной едой</p>
+                        <div class="game-levels">
+                            <span class="level" data-level="1">Уровень 1</span>
+                            <span class="level" data-level="2">Уровень 2</span>
+                        </div>
+                    </button>
+                    
+                    <button class="game-card" data-game="puzzle">
+                        <div class="game-icon">🧩</div>
+                        <h3>Пазл</h3>
+                        <p>Собери картинку из кусочков</p>
+                        <div class="game-levels">
+                            <span class="level" data-level="1">Уровень 1</span>
+                            <span class="level" data-level="2">Уровень 2</span>
+                        </div>
+                    </button>
+                    
+                    <button class="game-card" data-game="who-lives">
+                        <div class="game-icon">🏠</div>
+                        <h3>Кто где живёт?</h3>
+                        <p>Помоги животным найти свой дом</p>
+                        <div class="game-levels">
+                            <span class="level" data-level="1">Уровень 1</span>
+                            <span class="level" data-level="2">Уровень 2</span>
+                        </div>
+                    </button>
+                    
+                    <button class="game-card" data-game="truth-myth">
+                        <div class="game-icon">❓</div>
+                        <h3>Правда или миф</h3>
+                        <p>Проверь свои знания о природе</p>
+                        <div class="game-levels">
+                            <span class="level" data-level="1">Уровень 1</span>
+                            <span class="level" data-level="2">Уровень 2</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Container (hidden by default) -->
+        <section class="game-container" id="game-container" style="display: none;">
+            <div class="container">
+                <div class="game-header">
+                    <button class="back-to-menu" id="back-to-menu">
+                        <span>←</span> Назад к играм
+                    </button>
+                    <div class="game-info">
+                        <h2 class="game-title" id="game-title"></h2>
+                        <div class="game-score" id="game-score">Баллы: <span>0</span></div>
+                    </div>
+                </div>
+                
+                <div class="game-instruction" id="game-instruction">
+                    <div class="instruction-mascot">🦊</div>
+                    <p class="instruction-text" id="instruction-text"></p>
+                    <button class="sound-btn" id="instruction-sound" title="Озвучить">🔊</button>
+                </div>
+                
+                <div class="game-area" id="game-area">
+                    <!-- Game content will be dynamically loaded here -->
+                </div>
+                
+                <div class="game-controls" id="game-controls">
+                    <button class="game-btn btn-menu" id="btn-menu">Меню</button>
+                    <button class="game-btn btn-restart" id="btn-restart">Заново</button>
+                    <button class="game-btn btn-next" id="btn-next" disabled>Далее</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Result Overlay -->
+        <div class="result-overlay" id="result-overlay" style="display: none;">
+            <div class="result-content">
+                <div class="result-animation" id="result-animation"></div>
+                <h2 class="result-title" id="result-title"></h2>
+                <p class="result-score" id="result-score"></p>
+                <div class="result-buttons">
+                    <button class="game-btn btn-menu" id="result-menu">Меню</button>
+                    <button class="game-btn btn-restart" id="result-restart">Заново</button>
+                    <button class="game-btn btn-next" id="result-next">Далее</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon">🌿</span>
+                    <span>ФлораФауна</span>
+                </div>
+                <p class="footer-text">Обучающее приложение для детей © 2026</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Audio elements -->
+    <audio id="sound-correct" src="assets/sounds/correct.mp3" preload="auto"></audio>
+    <audio id="sound-wrong" src="assets/sounds/wrong.mp3" preload="auto"></audio>
+    <audio id="sound-win" src="assets/sounds/win.mp3" preload="auto"></audio>
+    <audio id="sound-click" src="assets/sounds/click.mp3" preload="auto"></audio>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/games/game-manager.js"></script>
+    <script src="js/games/find-me.js"></script>
+    <script src="js/games/who-eats.js"></script>
+    <script src="js/games/puzzle.js"></script>
+    <script src="js/games/who-lives.js"></script>
+    <script src="js/games/truth-myth.js"></script>
+</body>
+</html>
+
+
+
+

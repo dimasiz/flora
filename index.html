@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Флора и Фауна Беларуси - Изучай играя!</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🌿</span>
+                <span class="logo-text">ФлораФауна</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link active">Главная</a></li>
+                    <li><a href="games.html" class="nav-link">Игровая зона</a></li>
+                    <li><a href="encyclopedia.html" class="nav-link">Энциклопедия</a></li>
+                    <li><a href="map.html" class="nav-link">Карта</a></li>
+                </ul>
+            </nav>
+            <!-- Auth Buttons (visible when logged out) -->
+            <div class="auth-buttons">
+                <button class="auth-btn btn-login" onclick="openAuthModal('login')">Войти</button>
+                <button class="auth-btn btn-register" onclick="openAuthModal('register')">Регистрация</button>
+            </div>
+            
+            <!-- User Menu (visible when logged in) -->
+            <div class="user-menu" style="display: none;">
+                <a href="profile.html" class="user-profile-link">
+                    <span class="user-avatar">🦊</span>
+                    <span class="user-name">Пользователь</span>
+                </a>
+                <button class="auth-btn btn-logout" onclick="handleLogout()">Выйти</button>
+            </div>
+            
+            <button class="mobile-menu-btn" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-decorations">
+                <div class="floating-element leaf-1">🍃</div>
+                <div class="floating-element leaf-2">🌸</div>
+                <div class="floating-element butterfly">🦋</div>
+                <div class="floating-element bird">🐦</div>
+                <div class="floating-element flower">🌻</div>
+                <div class="floating-element bee">🐝</div>
+            </div>
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        Изучай флору и фауну 
+                        <span class="highlight">играя!</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Познавательные игры, энциклопедия и карта мира для детей
+                    </p>
+                    <div class="welcome-block">
+                        <div class="welcome-mascot">🦊</div>
+                        <p class="welcome-text">
+                            Привет! Здесь ты можешь играть, узнавать интересные факты о животных и растениях, 
+                            а также путешествовать по карте Беларуси!
+                        </p>
+                    </div>
+                    <a href="games.html" class="cta-button">
+                        <span>Начать изучение</span>
+                        <span class="btn-icon">🎮</span>
+                    </a>
+                </div>
+                <div class="hero-illustration">
+                    <div class="illustration-circle">
+                        <div class="animal animal-1">🦔</div>
+                        <div class="animal animal-2">🐿️</div>
+                        <div class="animal animal-3">🦉</div>
+                        <div class="animal animal-4">🐰</div>
+                        <div class="plant plant-1">🌲</div>
+                        <div class="plant plant-2">🌳</div>
+                        <div class="plant plant-3">🌷</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <h2 class="section-title">Что тебя ждёт?</h2>
+                <div class="features-grid">
+                    <a href="games.html" class="feature-card games-card">
+                        <div class="feature-icon">🎮</div>
+                        <h3>Игровая зона</h3>
+                        <p>5 увлекательных мини-игр для изучения природы</p>
+                        <div class="feature-games-list">
+                            <span>🔍 Найди меня</span>
+                            <span>🍎 Кто что ест?</span>
+                            <span>🧩 Пазл</span>
+                            <span>🏠 Кто где живёт?</span>
+                            <span>❓ Правда или миф</span>
+                        </div>
+                    </a>
+                    <a href="encyclopedia.html" class="feature-card encyclopedia-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>Энциклопедия</h3>
+                        <p>Карточки животных и растений с интересными фактами</p>
+                        <div class="feature-preview">
+                            <span>🦊</span>
+                            <span>🐻</span>
+                            <span>🌸</span>
+                            <span>🌲</span>
+                        </div>
+                    </a>
+                    <a href="map.html" class="feature-card map-card">
+                        <div class="feature-icon">🗺️</div>
+                        <h3>Карта Беларуси</h3>
+                        <p>Узнай, где живут звери и растут растения</p>
+                        <div class="feature-preview map-preview">
+                            <span>📍</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fun Facts -->
+        <section class="fun-facts">
+            <div class="container">
+                <h2 class="section-title">Интересные факты</h2>
+                <div class="facts-carousel">
+                    <div class="fact-card">
+                        <div class="fact-emoji">🦔</div>
+                        <p>Ёжик может съесть до 200 насекомых за одну ночь!</p>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-emoji">🌲</div>
+                        <p>Сосна может жить более 500 лет!</p>
+                    </div>
+                    <div class="fact-card">
+                        <div class="fact-emoji">🦉</div>
+                        <p>Сова может поворачивать голову на 270 градусов!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon">🌿</span>
+                    <span>ФлораФауна</span>
+                </div>
+                <p class="footer-text">Обучающее приложение для детей © 2026</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="auth-modal" style="display: none;">
+        <div class="auth-modal-overlay" onclick="closeAuthModal()"></div>
+        <div class="auth-modal-content">
+            <button class="close-modal-btn" onclick="closeAuthModal()">×</button>
+            
+            <!-- Login Form -->
+            <div class="auth-form login-form" id="login-form">
+                <div class="auth-form-header">
+                    <span class="auth-form-icon">🦊</span>
+                    <h2>Добро пожаловать!</h2>
+                    <p>Войди в свой аккаунт</p>
+                </div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">📧 Email</label>
+                        <input type="email" id="login-email" placeholder="твой@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">🔑 Пароль</label>
+                        <input type="password" id="login-password" placeholder="Твой пароль" required>
+                    </div>
+                    <div class="form-error" id="login-error"></div>
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Войти</span>
+                        <span class="btn-icon">🚀</span>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    Нет аккаунта? <a href="#" onclick="switchAuthForm('register')">Зарегистрируйся!</a>
+                </div>
+            </div>
+            
+            <!-- Register Form -->
+            <div class="auth-form register-form" id="register-form" style="display: none;">
+                <div class="auth-form-header">
+                    <span class="auth-form-icon">🎉</span>
+                    <h2>Присоединяйся!</h2>
+                    <p>Создай свой аккаунт</p>
+                </div>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-name">👤 Твоё имя</label>
+                        <input type="text" id="register-name" placeholder="Как тебя зовут?" required minlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">📧 Email</label>
+                        <input type="email" id="register-email" placeholder="твой@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">🔑 Пароль</label>
+                        <input type="password" id="register-password" placeholder="Придумай пароль (мин. 6 символов)" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-confirm">🔑 Повтори пароль</label>
+                        <input type="password" id="register-password-confirm" placeholder="Повтори пароль" required>
+                    </div>
+                    <div class="form-error" id="register-error"></div>
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Создать аккаунт</span>
+                        <span class="btn-icon">✨</span>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    Уже есть аккаунт? <a href="#" onclick="switchAuthForm('login')">Войди!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
+
+
+
+

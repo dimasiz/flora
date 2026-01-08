@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Энциклопедия - Флора и Фауна Беларуси</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/encyclopedia.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🌿</span>
+                <span class="logo-text">ФлораФауна</span>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Главная</a></li>
+                    <li><a href="games.html" class="nav-link">Игровая зона</a></li>
+                    <li><a href="encyclopedia.html" class="nav-link active">Энциклопедия</a></li>
+                    <li><a href="map.html" class="nav-link">Карта</a></li>
+                </ul>
+            </nav>
+            <!-- Auth Buttons (visible when logged out) -->
+            <div class="auth-buttons">
+                <button class="auth-btn btn-login" onclick="openAuthModal('login')">Войти</button>
+                <button class="auth-btn btn-register" onclick="openAuthModal('register')">Регистрация</button>
+            </div>
+            
+            <!-- User Menu (visible when logged in) -->
+            <div class="user-menu" style="display: none;">
+                <a href="profile.html" class="user-profile-link">
+                    <span class="user-avatar">🦊</span>
+                    <span class="user-name">Пользователь</span>
+                </a>
+                <button class="auth-btn btn-logout" onclick="handleLogout()">Выйти</button>
+            </div>
+            
+            <button class="mobile-menu-btn" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Auth Modal -->
+    <div class="auth-modal" id="auth-modal" style="display: none;">
+        <div class="auth-modal-overlay" onclick="closeAuthModal()"></div>
+        <div class="auth-modal-content">
+            <button class="close-modal-btn" onclick="closeAuthModal()">×</button>
+            <div class="auth-form login-form" id="login-form">
+                <div class="auth-form-header">
+                    <span class="auth-form-icon">🦊</span>
+                    <h2>Добро пожаловать!</h2>
+                    <p>Войди в свой аккаунт</p>
+                </div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="login-email">📧 Email</label>
+                        <input type="email" id="login-email" placeholder="твой@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">🔑 Пароль</label>
+                        <input type="password" id="login-password" placeholder="Твой пароль" required>
+                    </div>
+                    <div class="form-error" id="login-error"></div>
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Войти</span>
+                        <span class="btn-icon">🚀</span>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    Нет аккаунта? <a href="#" onclick="switchAuthForm('register')">Зарегистрируйся!</a>
+                </div>
+            </div>
+            <div class="auth-form register-form" id="register-form" style="display: none;">
+                <div class="auth-form-header">
+                    <span class="auth-form-icon">🎉</span>
+                    <h2>Присоединяйся!</h2>
+                    <p>Создай свой аккаунт</p>
+                </div>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="register-name">👤 Твоё имя</label>
+                        <input type="text" id="register-name" placeholder="Как тебя зовут?" required minlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">📧 Email</label>
+                        <input type="email" id="register-email" placeholder="твой@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">🔑 Пароль</label>
+                        <input type="password" id="register-password" placeholder="Придумай пароль (мин. 6 символов)" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-confirm">🔑 Повтори пароль</label>
+                        <input type="password" id="register-password-confirm" placeholder="Повтори пароль" required>
+                    </div>
+                    <div class="form-error" id="register-error"></div>
+                    <button type="submit" class="auth-submit-btn">
+                        <span>Создать аккаунт</span>
+                        <span class="btn-icon">✨</span>
+                    </button>
+                </form>
+                <div class="auth-switch">
+                    Уже есть аккаунт? <a href="#" onclick="switchAuthForm('login')">Войди!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content encyclopedia-page">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Энциклопедия</h1>
+                <p class="page-subtitle">Узнавай интересные факты о животных и растениях!</p>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="search-filter-section">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Введи название животного или растения..." autocomplete="off">
+                    <button class="search-btn" id="search-btn">🔍</button>
+                    <div class="search-suggestions" id="search-suggestions"></div>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Категория:</label>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="category" data-value="all">Все</button>
+                            <button class="filter-btn" data-filter="category" data-value="animals">🐾 Животные</button>
+                            <button class="filter-btn" data-filter="category" data-value="plants">🌱 Растения</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Тип:</label>
+                        <select id="type-filter" class="filter-select">
+                            <option value="all">Все типы</option>
+                            <optgroup label="Животные">
+                                <option value="mammals">Млекопитающие</option>
+                                <option value="birds">Птицы</option>
+                                <option value="fish">Рыбы</option>
+                                <option value="insects">Насекомые</option>
+                            </optgroup>
+                            <optgroup label="Растения">
+                                <option value="trees">Деревья</option>
+                                <option value="flowers">Цветы</option>
+                                <option value="herbs">Травы</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Ареал:</label>
+                        <select id="habitat-filter" class="filter-select">
+                            <option value="all">Все ареалы</option>
+                            <option value="forest">🌲 Лес</option>
+                            <option value="river">🌊 Река/Озеро</option>
+                            <option value="field">🌾 Поле</option>
+                            <option value="swamp">🌿 Болото</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="cards-grid" id="cards-grid">
+                <!-- Cards will be loaded dynamically -->
+            </div>
+
+            <!-- No Results Message -->
+            <div class="no-results" id="no-results" style="display: none;">
+                <div class="no-results-icon">🔍</div>
+                <p>Ничего не найдено. Попробуй другое слово!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Card Detail Modal -->
+    <div class="card-modal" id="card-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">✕</button>
+            <div class="modal-image">
+                <div id="modal-img" style="font-size: 8rem;"></div>
+            </div>
+            <div class="modal-info">
+                <h2 class="modal-title" id="modal-title"></h2>
+                <div class="modal-category" id="modal-category"></div>
+                <div class="modal-facts" id="modal-facts">
+                    <!-- Facts will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon">🌿</span>
+                    <span>ФлораФауна</span>
+                </div>
+                <p class="footer-text">Обучающее приложение для детей © 2026</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/firebase-config.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/encyclopedia.js"></script>
+</body>
+</html>
+
