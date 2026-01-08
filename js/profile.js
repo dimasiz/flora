@@ -2,6 +2,9 @@
 // PROFILE PAGE HANDLER
 // ========================================
 
+// Store unsubscribe function for cleanup
+let progressUnsubscribe = null;
+
 // Game names mapping
 const gameNames = {
     findMe: { name: 'Найди меня', icon: '🔍', totalLevels: 2 },
@@ -135,6 +138,9 @@ window.addEventListener('authStateChanged', (e) => {
     const notLoggedIn = document.getElementById('not-logged-in');
     const profileContent = document.getElementById('profile-content');
     
+    // Clean up previous listener
+    cleanupProgressListener();
+    
     if (isLoggedIn && user) {
         if (notLoggedIn) notLoggedIn.style.display = 'none';
         if (profileContent) profileContent.style.display = 'block';
@@ -165,6 +171,16 @@ async function loadProfileData(user) {
     
     // Update achievements
     updateAchievements(stats);
+    
+    // Set up real-time listener for progress updates
+    if (typeof listenToProgressUpdates === 'function') {
+        progressUnsubscribe = listenToProgressUpdates(user.uid, (updatedStats) => {
+            console.log('📊 Обновление статистики профиля в реальном времени');
+            updateStats(updatedStats);
+            updateGamesProgress(updatedStats);
+            updateAchievements(updatedStats);
+        });
+    }
 }
 
 function updateProfileHeader(user, profile) {
@@ -227,16 +243,28 @@ function updateStats(stats) {
 }
 
 function animateNumber(element, target) {
+    // Clear any existing animation timer on this element
+    if (element.animationTimer) {
+        clearInterval(element.animationTimer);
+    }
+    
     const duration = 1000;
     const start = parseInt(element.textContent) || 0;
+    
+    // If already at target, no need to animate
+    if (start === target) {
+        return;
+    }
+    
     const increment = (target - start) / (duration / 16);
     let current = start;
     
-    const timer = setInterval(() => {
+    element.animationTimer = setInterval(() => {
         current += increment;
         if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
             element.textContent = target;
-            clearInterval(timer);
+            clearInterval(element.animationTimer);
+            element.animationTimer = null;
         } else {
             element.textContent = Math.round(current);
         }
@@ -305,11 +333,35 @@ function updateAchievements(stats) {
 }
 
 // ========================================
+// CLEANUP FUNCTIONS
+// ========================================
+
+function cleanupProgressListener() {
+    if (progressUnsubscribe && typeof stopListeningToProgress === 'function') {
+        stopListeningToProgress(progressUnsubscribe);
+        progressUnsubscribe = null;
+    }
+}
+
+// Clean up listener when leaving the page
+window.addEventListener('beforeunload', () => {
+    cleanupProgressListener();
+});
+
+// Clean up listener when navigating away (for SPA-like navigation)
+window.addEventListener('hashchange', () => {
+    if (window.location.hash && !window.location.hash.includes('profile')) {
+        cleanupProgressListener();
+    }
+});
+
+// ========================================
 // EXPORT FUNCTIONS FOR GLOBAL USE
 // ========================================
 
 window.loadProfileData = loadProfileData;
 window.updateStats = updateStats;
+window.cleanupProgressListener = cleanupProgressListener;
 
 
 

@@ -172,6 +172,11 @@ async function handleRegister(event) {
 // Handle logout
 async function handleLogout() {
     try {
+        // Clean up progress listener before logout
+        if (typeof cleanupProgressListener === 'function') {
+            cleanupProgressListener();
+        }
+        
         const result = await logoutUser();
         if (result.success) {
             showNotification('До свидания! 👋', 'success');
