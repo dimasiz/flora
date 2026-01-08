@@ -45,7 +45,8 @@
               "lastPlayed": "ISO date string"
             }
           }
-        }
+        },
+        "unlockedAchievements": ["array of achievement IDs"]
       }
     },
     "encyclopedia": {
@@ -108,6 +109,7 @@
   
   "_description": {
     "users": "Пользователи приложения с профилями и прогрессом",
+    "unlockedAchievements": "Массив ID разблокированных достижений пользователя",
     "encyclopedia": "Энциклопедия животных и растений",
     "games": "Данные для мини-игр (уровни, вопросы и т.д.)",
     "mapMarkers": "Маркеры на интерактивной карте Беларуси"
