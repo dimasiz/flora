@@ -117,7 +117,7 @@ window.unlockedAchievements = new Set();
 function checkForNewAchievements(stats, userId) {
     const currentUnlocked = new Set();
     let newAchievements = [];
-    
+
     achievements.forEach(achievement => {
         if (achievement.condition(stats)) {
             currentUnlocked.add(achievement.id);
@@ -126,17 +126,19 @@ function checkForNewAchievements(stats, userId) {
             }
         }
     });
-    
+
     // Update unlocked achievements set
     window.unlockedAchievements = currentUnlocked;
-    
-    // Save unlocked achievements to database
-    if (userId && newAchievements.length > 0) {
+
+    // Save unlocked achievements to database (always save to ensure consistency)
+    if (userId) {
         saveUnlockedAchievements(Array.from(currentUnlocked), userId);
         // Show notification for new achievements
-        showAchievementNotifications(newAchievements);
+        if (newAchievements.length > 0) {
+            showAchievementNotifications(newAchievements);
+        }
     }
-    
+
     return newAchievements;
 }
 
