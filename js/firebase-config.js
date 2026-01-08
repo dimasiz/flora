@@ -365,6 +365,58 @@ function getLocalProgressStats() {
 }
 
 // ========================================
+// REAL-TIME LISTENERS
+// ========================================
+
+// Listen to progress updates in real-time
+function listenToProgressUpdates(userId, callback) {
+    if (!userId || !callback) {
+        console.error('❌ userId и callback обязательны для listenToProgressUpdates');
+        return null;
+    }
+    
+    try {
+        const { ref, onValue } = window.firebaseMethods;
+        const progressRef = ref(firebaseDatabase, `users/${userId}/progress`);
+        
+        // Set up the listener
+        const unsubscribe = onValue(progressRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const progressData = snapshot.val();
+                console.log('🔄 Получено обновление прогресса:', progressData);
+                callback(progressData);
+            } else {
+                // If no data exists, return empty progress
+                callback({
+                    games: {},
+                    totalScore: 0,
+                    gamesPlayed: 0,
+                    levelsCompleted: 0
+                });
+            }
+        }, (error) => {
+            console.error('❌ Ошибка слушателя прогресса:', error);
+        });
+        
+        console.log('✅ Слушатель прогресса установлен для пользователя:', userId);
+        return unsubscribe;
+    } catch (error) {
+        console.error('❌ Ошибка установки слушателя:', error);
+        return null;
+    }
+}
+
+// Stop listening to progress updates
+function stopListeningToProgress(unsubscribe) {
+    if (unsubscribe && typeof unsubscribe === 'function') {
+        unsubscribe();
+        console.log('✅ Слушатель прогресса отключен');
+        return true;
+    }
+    return false;
+}
+
+// ========================================
 // UI UPDATE FUNCTIONS
 // ========================================
 
