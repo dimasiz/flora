@@ -134,9 +134,9 @@ async function handleRegister(event) {
 
     const hasLeadingWhitespace = (value) => typeof value === 'string' && value.trimStart().length !== value.length;
 
-    // Validation: Email must not start with a space
-    if (hasLeadingWhitespace(emailRaw)) {
-        showFormError('register-error', 'Email не должен начинаться с пробела');
+    // Validation: Email must not contain spaces
+    if (typeof emailRaw === 'string' && emailRaw !== emailRaw.trim()) {
+        showFormError('register-error', 'Email не должен содержать пробелов');
         return;
     }
 
@@ -154,9 +154,9 @@ async function handleRegister(event) {
     
     // Validation: Email domain
     const allowedDomains = ['gmail.com', 'mail.ru', 'ya.ru', 'yandex.by'];
-    const emailParts = email.split('@');
+    const emailParts = emailRaw.split('@');
     const domain = emailParts[emailParts.length - 1].toLowerCase();
-    
+
     if (!allowedDomains.includes(domain)) {
         showFormError('register-error', 'Допустимые домены почты: gmail.com, mail.ru, ya.ru, yandex.by');
         return;
@@ -370,11 +370,24 @@ async function selectAvatar(avatar) {
 
 function setupEmailInputValidation() {
     const registerEmailInput = document.getElementById('register-email');
+    const loginEmailInput = document.getElementById('login-email');
+
     if (registerEmailInput) {
         registerEmailInput.addEventListener('input', function(e) {
             const value = e.target.value;
-            if (value.startsWith(' ')) {
-                e.target.value = value.trimStart();
+            // Remove all spaces
+            if (value !== value.trim()) {
+                e.target.value = value.replace(/\s/g, '');
+            }
+        });
+    }
+
+    if (loginEmailInput) {
+        loginEmailInput.addEventListener('input', function(e) {
+            const value = e.target.value;
+            // Remove all spaces
+            if (value !== value.trim()) {
+                e.target.value = value.replace(/\s/g, '');
             }
         });
     }
