@@ -99,8 +99,180 @@ const achievements = [
         description: 'Пройди все игры',
         icon: '👑',
         condition: (stats) => stats.levelsCompleted >= 14
+    },
+    {
+        id: 'speed_demon',
+        name: 'Скоростной демон',
+        description: 'Набери 50 баллов в одной игре',
+        icon: '⚡',
+        condition: (stats) => {
+            const games = stats.games || {};
+            return Object.values(games).some(game => {
+                if (!game.highScores) return false;
+                return Object.values(game.highScores).some(score => score >= 50);
+            });
+        }
+    },
+    {
+        id: 'persistent_player',
+        name: 'Настойчивый игрок',
+        description: 'Сыграй 10 раз',
+        icon: '🎯',
+        condition: (stats) => stats.gamesPlayed >= 10
     }
 ];
+
+// Store unlocked achievements to avoid showing notifications twice
+let unlockedAchievements = new Set();
+
+// Check if new achievements were unlocked
+function checkForNewAchievements(stats, userId) {
+    const currentUnlocked = new Set();
+    let newAchievements = [];
+    
+    achievements.forEach(achievement => {
+        if (achievement.condition(stats)) {
+            currentUnlocked.add(achievement.id);
+            if (!unlockedAchievements.has(achievement.id)) {
+                newAchievements.push(achievement);
+            }
+        }
+    });
+    
+    // Update unlocked achievements set
+    unlockedAchievements = currentUnlocked;
+    
+    // Save unlocked achievements to database
+    if (userId && newAchievements.length > 0) {
+        saveUnlockedAchievements(Array.from(currentUnlocked), userId);
+        // Show notification for new achievements
+        showAchievementNotifications(newAchievements);
+    }
+    
+    return newAchievements;
+}
+
+// Save unlocked achievements to database
+async function saveUnlockedAchievements(achievementIds, userId) {
+    if (!window.firebaseMethods || !userId) {
+        // Save to localStorage as backup
+        localStorage.setItem(`achievements_${userId}`, JSON.stringify(achievementIds));
+        return;
+    }
+    
+    try {
+        const { ref, set } = window.firebaseMethods;
+        await set(ref(firebaseDatabase, `users/${userId}/unlockedAchievements`), achievementIds);
+        console.log('✅ Достижения сохранены в Firebase');
+    } catch (error) {
+        console.error('❌ Ошибка сохранения достижений:', error);
+        // Fallback to localStorage
+        localStorage.setItem(`achievements_${userId}`, JSON.stringify(achievementIds));
+    }
+}
+
+// Load unlocked achievements from database
+async function loadUnlockedAchievements(userId) {
+    if (window.firebaseMethods && userId) {
+        try {
+            const { ref, get } = window.firebaseMethods;
+            const snapshot = await get(ref(firebaseDatabase, `users/${userId}/unlockedAchievements`));
+            if (snapshot.exists()) {
+                return snapshot.val() || [];
+            }
+        } catch (error) {
+            console.error('❌ Ошибка загрузки достижений:', error);
+        }
+    }
+    
+    // Fallback to localStorage
+    const stored = localStorage.getItem(`achievements_${userId}`);
+    return stored ? JSON.parse(stored) : [];
+}
+
+// Show achievement notification
+function showAchievementNotification(achievement) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'achievement-notification';
+    notification.innerHTML = `
+        <div class="achievement-notification-content">
+            <div class="achievement-icon">${achievement.icon}</div>
+            <div class="achievement-text">
+                <div class="achievement-title">🏆 Достижение получено!</div>
+                <div class="achievement-name">${achievement.name}</div>
+                <div class="achievement-description">${achievement.description}</div>
+            </div>
+            <button class="achievement-close">&times;</button>
+        </div>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Show notification
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+        hideAchievementNotification(notification);
+    }, 5000);
+    
+    // Add close button functionality
+    notification.querySelector('.achievement-close').addEventListener('click', () => {
+        hideAchievementNotification(notification);
+    });
+    
+    // Play achievement sound
+    playAchievementSound();
+}
+
+// Hide achievement notification
+function hideAchievementNotification(notification) {
+    notification.classList.remove('show');
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 300);
+}
+
+// Show multiple achievement notifications
+function showAchievementNotifications(achievements) {
+    achievements.forEach((achievement, index) => {
+        setTimeout(() => {
+            showAchievementNotification(achievement);
+        }, index * 800); // Stagger notifications by 800ms
+    });
+}
+
+// Play achievement sound
+function playAchievementSound() {
+    const audio = new Audio();
+    // Create a simple success sound using Web Audio API
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    } catch (error) {
+        console.log('Не удалось воспроизвести звук достижения:', error);
+    }
+}
 
 // ========================================
 // PROFILE PAGE INITIALIZATION
@@ -162,6 +334,10 @@ async function loadProfileData(user) {
     // Update profile header
     updateProfileHeader(user, profile);
     
+    // Load unlocked achievements first
+    const userAchievements = await loadUnlockedAchievements(user.uid);
+    unlockedAchievements = new Set(userAchievements);
+    
     // Load and display stats
     const stats = await getAllProgressStats();
     updateStats(stats);
@@ -172,6 +348,9 @@ async function loadProfileData(user) {
     // Update achievements
     updateAchievements(stats);
     
+    // Check for new achievements and show notifications
+    checkForNewAchievements(stats, user.uid);
+    
     // Set up real-time listener for progress updates
     if (typeof listenToProgressUpdates === 'function') {
         progressUnsubscribe = listenToProgressUpdates(user.uid, (updatedStats) => {
@@ -179,6 +358,8 @@ async function loadProfileData(user) {
             updateStats(updatedStats);
             updateGamesProgress(updatedStats);
             updateAchievements(updatedStats);
+            // Check for new achievements on every update
+            checkForNewAchievements(updatedStats, user.uid);
         });
     }
 }
@@ -362,6 +543,7 @@ window.addEventListener('hashchange', () => {
 window.loadProfileData = loadProfileData;
 window.updateStats = updateStats;
 window.cleanupProgressListener = cleanupProgressListener;
+window.checkForNewAchievements = checkForNewAchievements;
 
 
 

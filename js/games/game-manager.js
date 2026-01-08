@@ -167,7 +167,10 @@ class GameManager {
             // Save progress to Firebase (and localStorage as backup)
             // Map game name to Firebase key
             const gameKey = this.getGameKey(this.currentGame);
-            saveGameProgress(gameKey, this.currentLevel, score || 0, true);
+            saveGameProgress(gameKey, this.currentLevel, score || 0, true).then(() => {
+                // Check for achievements after saving progress
+                this.checkAchievements();
+            });
             
             // Enable next button
             document.getElementById('btn-next').disabled = false;
@@ -179,6 +182,24 @@ class GameManager {
             this.elements.resultTitle.className = 'result-title fail';
             this.elements.resultAnimation.textContent = '😊';
             this.elements.resultScore.textContent = 'Ты справишься!';
+        }
+    }
+    
+    // Check for new achievements
+    async checkAchievements() {
+        try {
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            // Load current stats
+            const stats = await getAllProgressStats();
+            
+            // Check for achievements if the function exists
+            if (typeof window.checkForNewAchievements === 'function') {
+                window.checkForNewAchievements(stats, user.uid);
+            }
+        } catch (error) {
+            console.error('Ошибка проверки достижений:', error);
         }
     }
     
