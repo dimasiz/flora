@@ -1168,8 +1168,13 @@ const localData = {
                 },
                 {
                     level: 2,
+<<<<<<< HEAD
                     image: 'https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=600&h=600&fit=crop',
                     name: 'Бургер',
+=======
+                    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUAL8kJjLhI_rnsLxe-lxh8RWdREQIUE0XxQ&s',
+                    name: 'Сова',
+>>>>>>> 8bbba0aacff4faab10dde3a78437f4961864e9f7
                     gridSize: 3
                 },
                 {
