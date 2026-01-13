@@ -1216,7 +1216,7 @@ const localData = {
                 },
                 {
                     level: 2,
-                    image: 'https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=600&h=600&fit=crop',
+                    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUAL8kJjLhI_rnsLxe-lxh8RWdREQIUE0XxQ&s',
                     name: 'Сова',
                     gridSize: 3
                 },
