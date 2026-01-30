@@ -41,16 +41,19 @@ class MapPage {
     setupMapDisplay() {
         // Check if map image exists
         if (this.elements.mapImage) {
+            // Изображение уже показывается по умолчанию
             this.elements.mapImage.onload = () => {
-                this.elements.mapImage.classList.add('loaded');
-                if (this.elements.regionOverlays) {
-                    this.elements.regionOverlays.style.display = 'block';
+                console.log('Карта загружена успешно');
+                // Скрываем SVG fallback если картинка загрузилась
+                if (this.elements.fallbackSvg) {
+                    this.elements.fallbackSvg.style.display = 'none';
                 }
             };
             
             this.elements.mapImage.onerror = () => {
-                // Image failed to load, show SVG fallback
-                console.log('Map image not found, using SVG fallback');
+                // Картинка не загрузилась - показываем SVG
+                console.log('Карта не загрузилась, показываем SVG');
+                this.elements.mapImage.style.display = 'none';
                 if (this.elements.fallbackSvg) {
                     this.elements.fallbackSvg.style.display = 'block';
                 }

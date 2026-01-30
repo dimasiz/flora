@@ -43,7 +43,7 @@ class PuzzleGame {
         this.pieces = Array.from({ length: this.gridSize * this.gridSize }, (_, i) => i);
         
         // Set instruction
-        gameManager.setInstruction(`Картинка разбилась на кусочки! Собери ${this.imageName}, чтобы увидеть картинку целиком.`);
+        gameManager.setInstruction(`Собери ${this.imageName}! Перетащи кусочки на своё место.`);
         
         this.render();
     }
@@ -52,8 +52,15 @@ class PuzzleGame {
         const gameArea = gameManager.getGameArea();
         const shuffledPieces = shuffleArray(this.pieces.filter(p => !this.placedPieces.has(p)));
         
-        const pieceSize = 100 / this.gridSize; // Size in percentage
         const pieceSizePx = this.gridSize === 3 ? 80 : 70; // Size in pixels for display
+        
+        // Calculate background position correctly for CSS
+        // For background-position with percentage: position = index * 100 / (gridSize - 1)
+        const getBackgroundPosition = (row, col) => {
+            const posX = this.gridSize > 1 ? (col * 100 / (this.gridSize - 1)) : 0;
+            const posY = this.gridSize > 1 ? (row * 100 / (this.gridSize - 1)) : 0;
+            return `${posX}% ${posY}%`;
+        };
         
         gameArea.innerHTML = `
             <div class="puzzle-container">
@@ -72,7 +79,7 @@ class PuzzleGame {
                                      height: ${pieceSizePx}px;
                                      background-image: url('${this.image}');
                                      background-size: ${this.gridSize * 100}% ${this.gridSize * 100}%;
-                                     background-position: ${col * pieceSize}% ${row * pieceSize}%;
+                                     background-position: ${getBackgroundPosition(row, col)};
                                  ">
                             </div>
                         `;
@@ -91,7 +98,7 @@ class PuzzleGame {
                                      style="${isPlaced ? `
                                          background-image: url('${this.image}');
                                          background-size: ${this.gridSize * 100}% ${this.gridSize * 100}%;
-                                         background-position: ${col * pieceSize}% ${row * pieceSize}%;
+                                         background-position: ${getBackgroundPosition(row, col)};
                                      ` : 'background: rgba(255,255,255,0.3);'}">
                                     ${!isPlaced ? (index + 1) : ''}
                                 </div>

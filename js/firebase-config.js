@@ -1189,8 +1189,18 @@ const localData = {
                 },
                 {
                     level: 2,
+<<<<<<< HEAD
                     image: 'https://images.unsplash.com/photo-1644125003076-ce465d331769?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                     name: 'Лиса',
+=======
+<<<<<<< HEAD
+                    image: 'https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=600&h=600&fit=crop',
+                    name: 'Бургер',
+=======
+                    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUAL8kJjLhI_rnsLxe-lxh8RWdREQIUE0XxQ&s',
+                    name: 'Сова',
+>>>>>>> 8bbba0aacff4faab10dde3a78437f4961864e9f7
+>>>>>>> 68169de7676e533256e8347b2da926f6ede8b7c8
                     gridSize: 3
                 },
                 {

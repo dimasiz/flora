@@ -104,13 +104,14 @@
                     <a href="games.html" class="feature-card games-card">
                         <div class="feature-icon">🎮</div>
                         <h3>Игровая зона</h3>
-                        <p>5 увлекательных мини-игр для изучения природы</p>
+                        <p>6 увлекательных мини-игр для изучения природы</p>
                         <div class="feature-games-list">
                             <span>🔍 Найди меня</span>
                             <span>🍎 Кто что ест?</span>
                             <span>🧩 Пазл</span>
                             <span>🏠 Кто где живёт?</span>
                             <span>❓ Правда или миф</span>
+                            <span>🔊 Кто так говорит?</span>
                         </div>
                     </a>
                     <a href="encyclopedia.html" class="feature-card encyclopedia-card">
@@ -245,6 +246,16 @@
     <script src="js/achievements.js"></script>
     <script src="js/app.js"></script>
     <script src="js/auth.js"></script>
+    <script>
+        // Озвучка приветствия при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Небольшая задержка для загрузки голосов
+            setTimeout(() => {
+                const welcomeText = "Привет! Добро пожаловать в мир Флоры и Фауны Беларуси! Здесь ты можешь играть, узнавать интересные факты о животных и растениях, а также путешествовать по карте!";
+                speakText(welcomeText);
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
 

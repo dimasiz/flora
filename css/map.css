@@ -96,22 +96,16 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    display: none; /* Hidden by default, shown when image loads */
-}
-
-.map-base-image.loaded {
-    display: block;
+    display: block !important;
+    border-radius: 10px;
+    background: #f5f5f5;
 }
 
 /* SVG Fallback (shown when no image) */
 .map-fallback-svg {
     width: 100%;
     height: 100%;
-    display: block;
-}
-
-.map-base-image.loaded + .map-fallback-svg {
-    display: none;
+    display: none; /* Скрыт по умолчанию, показывается если картинка не загрузилась */
 }
 
 /* Region styles in SVG */
