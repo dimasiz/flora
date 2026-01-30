@@ -1132,6 +1132,16 @@ const localData = {
                         { target: '🍄', others: ['🌿', '🌱', '☘️', '🍀', '🪴'], targetName: 'гриб' },
                         { target: '🌸', others: ['🌺', '🌷', '🌹', '💐', '🪻'], targetName: 'сакуру' }
                     ]
+                },
+                {
+                    level: 3,
+                    rounds: [
+                        { target: '🦬', others: ['🐂', '🐃', '🦛', '🐘', '🦏'], targetName: 'зубра' },
+                        { target: '🦫', others: ['🦦', '🦭', '🐿️', '🦔', '🐀'], targetName: 'бобра' },
+                        { target: '🦢', others: ['🦆', '🦩', '🪿', '🐓', '🦚'], targetName: 'лебедя' },
+                        { target: '🪺', others: ['🥚', '🐣', '🐥', '🪹', '🐦'], targetName: 'гнездо' },
+                        { target: '🌾', others: ['🌿', '🍀', '🌱', '☘️', '🪴'], targetName: 'камыш' }
+                    ]
                 }
             ]
         },
@@ -1155,6 +1165,17 @@ const localData = {
                         { animal: '🐝', animalName: 'Пчела', food: '🌸', foodName: 'Цветок' },
                         { animal: '🐦', animalName: 'Птичка', food: '🌾', foodName: 'Зёрнышки' }
                     ]
+                },
+                {
+                    level: 3,
+                    pairs: [
+                        { animal: '🦫', animalName: 'Бобр', food: '🪵', foodName: 'Кора дерева' },
+                        { animal: '🐸', animalName: 'Лягушка', food: '🪰', foodName: 'Мошки' },
+                        { animal: '🦢', animalName: 'Лебедь', food: '🌿', foodName: 'Водоросли' },
+                        { animal: '🐺', animalName: 'Волк', food: '🥩', foodName: 'Мясо' },
+                        { animal: '🦋', animalName: 'Бабочка', food: '🧃', foodName: 'Нектар' },
+                        { animal: '🐿️', animalName: 'Белка', food: '🍄', foodName: 'Грибы' }
+                    ]
                 }
             ]
         },
@@ -1162,14 +1183,14 @@ const localData = {
             levels: [
                 {
                     level: 1,
-                    image: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=600&h=600&fit=crop',
-                    name: 'Лисичка',
+                    image: 'https://images.unsplash.com/photo-1543549790-8b5f4a028cfb?w=600&h=600&fit=crop',
+                    name: 'Сова',
                     gridSize: 3
                 },
                 {
                     level: 2,
-                    image: 'https://images.unsplash.com/photo-1607013251379-e6eecfffe234?w=600&h=600&fit=crop',
-                    name: 'Бургер',
+                    image: 'https://images.unsplash.com/photo-1644125003076-ce465d331769?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    name: 'Лиса',
                     gridSize: 3
                 },
                 {
@@ -1188,13 +1209,13 @@ const localData = {
                     level: 5,
                     image: 'https://images.unsplash.com/photo-1568116344473-1a1e3e0b925b?w=600&h=600&fit=crop',
                     name: 'Зубр',
-                    gridSize: 4
+                    gridSize: 3
                 },
                 {
                     level: 6,
                     image: 'https://images.unsplash.com/photo-1533282960533-51328aa49826?w=600&h=600&fit=crop',
                     name: 'Олень',
-                    gridSize: 4
+                    gridSize: 3
                 }
             ]
         },
@@ -1230,6 +1251,23 @@ const localData = {
                         { id: 'swamp', emoji: '🌿', name: 'Болото' },
                         { id: 'field', emoji: '🌾', name: 'Поле' }
                     ]
+                },
+                {
+                    level: 3,
+                    animals: [
+                        { emoji: '🦬', name: 'Зубр', habitat: 'forest' },
+                        { emoji: '🦫', name: 'Бобр', habitat: 'river' },
+                        { emoji: '🦢', name: 'Лебедь', habitat: 'river' },
+                        { emoji: '🐺', name: 'Волк', habitat: 'forest' },
+                        { emoji: '🦔', name: 'Ёжик', habitat: 'forest' },
+                        { emoji: '🐝', name: 'Пчела', habitat: 'field' }
+                    ],
+                    habitats: [
+                        { id: 'forest', emoji: '🌲', name: 'Лес' },
+                        { id: 'river', emoji: '🌊', name: 'Река' },
+                        { id: 'swamp', emoji: '🌿', name: 'Болото' },
+                        { id: 'field', emoji: '🌾', name: 'Поле' }
+                    ]
                 }
             ]
         },
@@ -1253,6 +1291,195 @@ const localData = {
                         { statement: 'Дельфин — это рыба', answer: false, emoji: '🐬' },
                         { statement: 'Зимой заяц становится белым', answer: true, emoji: '🐰' },
                         { statement: 'У осьминога 3 сердца', answer: true, emoji: '🐙' }
+                    ]
+                },
+                {
+                    level: 3,
+                    questions: [
+                        { statement: 'Крокодил может жить более 100 лет', answer: true, emoji: '🐊' },
+                        { statement: 'Страус прячет голову в песок от страха', answer: false, emoji: '🦃' },
+                        { statement: 'Муравьи никогда не спят', answer: true, emoji: '🐜' },
+                        { statement: 'У жирафа такое же количество шейных позвонков, как у человека', answer: true, emoji: '🦒' },
+                        { statement: 'Пингвины живут только в Антарктиде', answer: false, emoji: '🐧' }
+                    ]
+                }
+            ]
+        },
+        whoSays: {
+            levels: [
+                {
+                    level: 1,
+                    rounds: [
+                        {
+                            correctAnimal: 'dog',
+                            soundUrl: 'https://www.soundjay.com/animal/dog-barking-01.mp3',
+                            soundText: 'Гав гав гав!',
+                            options: [
+                                { id: 'dog', name: 'Собака', image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop' },
+                                { id: 'cat', name: 'Кошка', image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&h=200&fit=crop' },
+                                { id: 'cow', name: 'Корова', image: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'cat',
+                            soundUrl: 'https://www.soundjay.com/animal/cat-meow-01.mp3',
+                            soundText: 'Мяу мяу!',
+                            options: [
+                                { id: 'dog', name: 'Собака', image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop' },
+                                { id: 'cat', name: 'Кошка', image: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&h=200&fit=crop' },
+                                { id: 'bird', name: 'Птичка', image: 'https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'cow',
+                            soundUrl: 'https://www.soundjay.com/animal/cow-moo-01.mp3',
+                            soundText: 'Муууу!',
+                            options: [
+                                { id: 'pig', name: 'Свинья', image: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=200&h=200&fit=crop' },
+                                { id: 'cow', name: 'Корова', image: 'https://images.unsplash.com/photo-1527153857715-3908f2bae5e8?w=200&h=200&fit=crop' },
+                                { id: 'horse', name: 'Лошадь', image: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'rooster',
+                            soundUrl: 'https://www.soundjay.com/animal/rooster-crow-01.mp3',
+                            soundText: 'Кукареку!',
+                            options: [
+                                { id: 'duck', name: 'Утка', image: 'https://images.unsplash.com/photo-1459682687441-7761439a709d?w=200&h=200&fit=crop' },
+                                { id: 'rooster', name: 'Петух', image: 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=200&h=200&fit=crop' },
+                                { id: 'owl', name: 'Сова', image: 'https://images.unsplash.com/photo-1543549790-8b5f4a028cfb?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'sheep',
+                            soundUrl: 'https://www.soundjay.com/animal/sheep-baa-01.mp3',
+                            soundText: 'Беее!',
+                            options: [
+                                { id: 'sheep', name: 'Овечка', image: 'https://images.unsplash.com/photo-1484557985045-edf25e08da73?w=200&h=200&fit=crop' },
+                                { id: 'goat', name: 'Коза', image: 'https://images.unsplash.com/photo-1524024973431-2ad916746881?w=200&h=200&fit=crop' },
+                                { id: 'pig', name: 'Свинья', image: 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=200&h=200&fit=crop' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    level: 2,
+                    rounds: [
+                        {
+                            correctAnimal: 'wolf',
+                            soundUrl: 'https://www.soundjay.com/animal/wolf-howl-01.mp3',
+                            soundText: 'Ауууу!',
+                            options: [
+                                { id: 'wolf', name: 'Волк', image: 'https://images.unsplash.com/photo-1564466809058-bf4114d55352?w=200&h=200&fit=crop' },
+                                { id: 'dog', name: 'Собака', image: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop' },
+                                { id: 'fox', name: 'Лиса', image: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=200&h=200&fit=crop' },
+                                { id: 'bear', name: 'Медведь', image: 'https://images.unsplash.com/photo-1589656966895-2f33e7653819?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'owl',
+                            soundUrl: 'https://www.soundjay.com/animal/owl-hoot-01.mp3',
+                            soundText: 'Угуууу!',
+                            options: [
+                                { id: 'crow', name: 'Ворона', image: 'https://images.unsplash.com/photo-1591608971362-f08b2a75731a?w=200&h=200&fit=crop' },
+                                { id: 'owl', name: 'Сова', image: 'https://images.unsplash.com/photo-1543549790-8b5f4a028cfb?w=200&h=200&fit=crop' },
+                                { id: 'eagle', name: 'Орёл', image: 'https://images.unsplash.com/photo-1611689342806-0863700ce1e4?w=200&h=200&fit=crop' },
+                                { id: 'parrot', name: 'Попугай', image: 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'frog',
+                            soundUrl: 'https://www.soundjay.com/animal/frog-croaking-01.mp3',
+                            soundText: 'Ква ква!',
+                            options: [
+                                { id: 'snake', name: 'Змея', image: 'https://images.unsplash.com/photo-1531386151447-fd76ad50012f?w=200&h=200&fit=crop' },
+                                { id: 'turtle', name: 'Черепаха', image: 'https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?w=200&h=200&fit=crop' },
+                                { id: 'frog', name: 'Лягушка', image: 'https://images.unsplash.com/photo-1550853024-fae8cd4be47f?w=200&h=200&fit=crop' },
+                                { id: 'fish', name: 'Рыба', image: 'https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'lion',
+                            soundUrl: 'https://www.soundjay.com/animal/lion-roar-01.mp3',
+                            soundText: 'Рррр!',
+                            options: [
+                                { id: 'lion', name: 'Лев', image: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=200&h=200&fit=crop' },
+                                { id: 'tiger', name: 'Тигр', image: 'https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=200&h=200&fit=crop' },
+                                { id: 'bear', name: 'Медведь', image: 'https://images.unsplash.com/photo-1589656966895-2f33e7653819?w=200&h=200&fit=crop' },
+                                { id: 'wolf', name: 'Волк', image: 'https://images.unsplash.com/photo-1564466809058-bf4114d55352?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'duck',
+                            soundUrl: 'https://www.soundjay.com/animal/duck-quack-01.mp3',
+                            soundText: 'Кря кря!',
+                            options: [
+                                { id: 'goose', name: 'Гусь', image: 'https://images.unsplash.com/photo-1562008939-f41e09aa8a7b?w=200&h=200&fit=crop' },
+                                { id: 'duck', name: 'Утка', image: 'https://images.unsplash.com/photo-1459682687441-7761439a709d?w=200&h=200&fit=crop' },
+                                { id: 'swan', name: 'Лебедь', image: 'https://images.unsplash.com/photo-1524024973431-2ad916746881?w=200&h=200&fit=crop' },
+                                { id: 'rooster', name: 'Петух', image: 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=200&h=200&fit=crop' }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    level: 3,
+                    rounds: [
+                        {
+                            correctAnimal: 'elephant',
+                            soundUrl: 'https://www.soundjay.com/animal/elephant-trumpeting-01.mp3',
+                            soundText: 'Туууу!',
+                            options: [
+                                { id: 'elephant', name: 'Слон', image: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=200&h=200&fit=crop' },
+                                { id: 'rhino', name: 'Носорог', image: 'https://images.unsplash.com/photo-1598894000329-0041c4a10d55?w=200&h=200&fit=crop' },
+                                { id: 'hippo', name: 'Бегемот', image: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=200&h=200&fit=crop' },
+                                { id: 'giraffe', name: 'Жираф', image: 'https://images.unsplash.com/photo-1534567153574-2b12153a87f0?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'monkey',
+                            soundUrl: 'https://www.soundjay.com/animal/monkey-scream-01.mp3',
+                            soundText: 'У-у-у а-а-а!',
+                            options: [
+                                { id: 'monkey', name: 'Обезьяна', image: 'https://images.unsplash.com/photo-1540573133985-87b6da6d54a9?w=200&h=200&fit=crop' },
+                                { id: 'gorilla', name: 'Горилла', image: 'https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=200&h=200&fit=crop' },
+                                { id: 'lemur', name: 'Лемур', image: 'https://images.unsplash.com/photo-1518709594023-6eab9bab7b23?w=200&h=200&fit=crop' },
+                                { id: 'sloth', name: 'Ленивец', image: 'https://images.unsplash.com/photo-1547721064-da6cfb341d50?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'horse',
+                            soundUrl: 'https://www.soundjay.com/animal/horse-neigh-01.mp3',
+                            soundText: 'Иго-го!',
+                            options: [
+                                { id: 'donkey', name: 'Осёл', image: 'https://images.unsplash.com/photo-1598974357801-cbca100e65d3?w=200&h=200&fit=crop' },
+                                { id: 'horse', name: 'Лошадь', image: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=200&h=200&fit=crop' },
+                                { id: 'zebra', name: 'Зебра', image: 'https://images.unsplash.com/photo-1526095179574-86e545f5e8e4?w=200&h=200&fit=crop' },
+                                { id: 'deer', name: 'Олень', image: 'https://images.unsplash.com/photo-1484406566174-9da000fda645?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'bee',
+                            soundUrl: 'https://www.soundjay.com/animal/bee-buzzing-01.mp3',
+                            soundText: 'Жжжж!',
+                            options: [
+                                { id: 'bee', name: 'Пчела', image: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=200&h=200&fit=crop' },
+                                { id: 'fly', name: 'Муха', image: 'https://images.unsplash.com/photo-1558430665-6ddd08021896?w=200&h=200&fit=crop' },
+                                { id: 'butterfly', name: 'Бабочка', image: 'https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=200&h=200&fit=crop' },
+                                { id: 'mosquito', name: 'Комар', image: 'https://images.unsplash.com/photo-1562569633-622303bafef5?w=200&h=200&fit=crop' }
+                            ]
+                        },
+                        {
+                            correctAnimal: 'crow',
+                            soundUrl: 'https://www.soundjay.com/animal/crow-caw-01.mp3',
+                            soundText: 'Кар кар!',
+                            options: [
+                                { id: 'crow', name: 'Ворона', image: 'https://images.unsplash.com/photo-1591608971362-f08b2a75731a?w=200&h=200&fit=crop' },
+                                { id: 'sparrow', name: 'Воробей', image: 'https://images.unsplash.com/photo-1522926193341-e9ffd686c60f?w=200&h=200&fit=crop' },
+                                { id: 'pigeon', name: 'Голубь', image: 'https://images.unsplash.com/photo-1548247416-ec66f4900b2e?w=200&h=200&fit=crop' },
+                                { id: 'magpie', name: 'Сорока', image: 'https://images.unsplash.com/photo-1606567595334-d39972c85dfd?w=200&h=200&fit=crop' }
+                            ]
+                        }
                     ]
                 }
             ]
